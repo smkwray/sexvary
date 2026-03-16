@@ -1,0 +1,63 @@
+project:
+  name: sexvary
+  version: 0.1.0
+  posture: descriptive
+  primary_orientation: male_vs_female_variability
+
+analysis_defaults:
+  min_n_per_sex_for_variance: 200
+  min_n_per_sex_for_95_tail: 500
+  min_n_per_sex_for_99_tail: 2000
+  min_unique_values: 10
+  default_age_band_width_years: 4
+  dataset_age_band_width_years:
+    nlsy79_child_ya: 2
+  dataset_min_n_per_sex_for_variance:
+    nlsy79_child_ya: 100
+  fallback_to_all_ages_if_no_variance_cells_per_trait:
+    - nlsy79_child_ya
+  tail_quantiles: [0.90, 0.95, 0.99]
+  lower_tail_quantiles: [0.10, 0.05, 0.01]
+  winsorize_for_sensitivity: [0.005, 0.995]
+  use_weighted_estimates: true
+  report_unweighted_sensitivity: true
+  primary_meta_model: random_effects
+  secondary_meta_model: fixed_effect
+  standardize_within_analysis_cell: true
+  pooled_thresholds_within_cell: true
+  design_bootstrap_replicates: 40
+  design_bootstrap_seed: 20260314
+  suppress_tail_metrics_for_scale_types:
+    - bounded_count
+    - ordinal_or_bounded_composite
+  fragile_variance_scale_types:
+    - bounded_count
+    - ordinal_or_bounded_composite
+  boundary_mass_fragile_share: 0.10
+  boundary_mass_suppress_variance_share: 0.25
+  bounded_scale_min_unique_values_for_variance: 8
+
+reporting:
+  include_nulls: true
+  include_female_greater: true
+  separate_confirmatory_and_exploratory: true
+  forbid_causal_language: true
+
+confirmatory_dataset_order:
+  - nlsy79_main
+  - nlsy97_main
+  - nlsy79_child_ya
+  - piaac_cycle2
+  - ecls_k_2011
+  - hsls_2009
+
+secondary_dataset_order:
+  - pisa_2022
+  - timss_2019
+  - nhanes_2011_2023
+  - nnyfs_2012
+  - psid_cds_tas
+  - add_health_public
+  - hrs_public
+  - midus_public
+  - els_2002

@@ -1,0 +1,10 @@
+local_datasets:
+  nlsy79_main: ../path/to/nlsy79_main_extract.csv
+  nlsy97_main: ../path/to/nlsy97_main_extract.csv
+  nlsy79_child_ya: ../path/to/nlsy79_child_ya_extract.csv
+
+# Optional notes to yourself:
+notes:
+  nlsy79_main: "Include respondent id, sex, age/year, weights, g and/or ASVAB-derived variables."
+  nlsy97_main: "Same idea as NLSY79 main."
+  nlsy79_child_ya: "Prefer PPVT, PIAT reading/math, child id, mother link if available."

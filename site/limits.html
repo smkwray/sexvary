@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Limits &mdash; Sex Differences in Variability</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Results</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="methods.html">Methods</a></li>
+      <li><a href="limits.html" class="active">Limits</a></li>
+      <li><a href="explanations.html">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Limits</h1>
+    <p>Every finding in this project should be read in light of the constraints described here. These are not afterthoughts&mdash;they are central to interpreting the results correctly.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- Descriptive not causal -->
+  <section class="section">
+    <div class="container">
+      <h2>Descriptive, Not Causal</h2>
+      <p>
+        This project documents observed patterns in score variability. It does not and cannot
+        establish <em>why</em> those patterns exist. Observed variance on a particular
+        instrument in a particular population at a particular time reflects the combined
+        influence of measurement properties, educational exposure, selection into the sample,
+        and many other factors that cannot be separated with observational data alone.
+      </p>
+      <p>
+        The results do not support claims about innate capacity, biological determinism, or
+        essential sex differences. They describe what public-use test scores look like, not
+        what people are capable of.
+      </p>
+    </div>
+  </section>
+
+  <!-- Public-use constraints -->
+  <section class="section">
+    <div class="container">
+      <h2>Public-Use Data Constraints</h2>
+      <p>
+        All datasets used here are public-use files, which impose several constraints:
+      </p>
+      <ul style="margin:1rem 0 1rem 1.5rem">
+        <li>Some survey design variables (PSU, stratum IDs) are masked or coarsened in public releases, limiting the precision of design-aware inference.</li>
+        <li>Geographic identifiers are often suppressed, preventing sub-national analysis.</li>
+        <li>Small-cell suppression rules may exclude the tails of the distribution, which are precisely the part of the distribution most relevant to variability differences.</li>
+        <li>Some datasets require registration-based access, and their terms of use prohibit redistribution of the raw microdata.</li>
+      </ul>
+      <p>
+        These constraints are why the project uses an evidence-tier system: datasets with
+        stronger design metadata get stronger labels, while those with weaker public-use
+        infrastructure are marked as method-limited or provisional.
+      </p>
+    </div>
+  </section>
+
+  <!-- Bounded scales -->
+  <section class="section">
+    <div class="container">
+      <h2>Bounded and Heaped Scales</h2>
+      <p>
+        Some measures have hard floor or ceiling effects. For example:
+      </p>
+      <ul style="margin:1rem 0 1rem 1.5rem">
+        <li>The NHANES adult cognition screen (CFDDS) has a narrow scoring range that mechanically compresses variance, especially in older-adult age bands where many respondents cluster near the ceiling.</li>
+        <li>NLSY Child/YA PIAT and PPVT scores can pile up at scale boundaries in certain age bands.</li>
+        <li>Kindergarten reading scores in ECLS-K show floor effects at school entry.</li>
+      </ul>
+      <p>
+        Cells affected by bounded-scale issues are flagged as QA-only or carry QA flags so
+        that they are not mistaken for clean estimates. However, even some inferential cells
+        may have residual scale-boundary effects that are difficult to detect automatically.
+      </p>
+    </div>
+  </section>
+
+  <!-- Why some are supporting -->
+  <section class="section">
+    <div class="container">
+      <h2>Why Some Datasets Are Supporting Rather Than Headline</h2>
+      <p>
+        Not all 14 datasets contribute to the headline claim. The main reasons a dataset
+        stays below headline quality:
+      </p>
+
+      <h3>Method-limited inference</h3>
+      <p>
+        The NLSY datasets and PSID CDS/TAS use simple effective-sample-size SE approximations
+        instead of proper replicate weights. Their point estimates may be reasonable, but the
+        uncertainty quantification is weaker than what the headline datasets provide.
+      </p>
+
+      <h3>Weight-related caveats</h3>
+      <p>
+        Some PSID TAS rows require alternate public weight fallback because the labeled
+        cross-sectional weight is not available or not appropriate for that wave. These
+        rows are marked provisional.
+      </p>
+
+      <h3>Secondary or exploratory priority</h3>
+      <p>
+        NHANES physical traits and NNYFS are classified as secondary or exploratory because
+        physical traits (height, weight, grip strength) are a different domain from the
+        cognitive and achievement traits that are the project&rsquo;s primary focus. They
+        broaden coverage but are kept structurally separate.
+      </p>
+    </div>
+  </section>
+
+  <!-- ECLS-K counterexample -->
+  <section class="section">
+    <div class="container">
+      <h2>The ECLS-K Kindergarten Reading Reversal</h2>
+
+      <div class="callout">
+        <div class="callout__title">Why this counterexample matters</div>
+        <p>
+          The fall kindergarten 2010 reading achievement cell in ECLS-K:2011 shows a log
+          variance ratio of &minus;2.29&mdash;substantially greater female variability. This is
+          the single most extreme cell in the entire headline layer, by a wide margin.
+        </p>
+      </div>
+
+      <p>
+        By later grades, ECLS-K reading achievement shifts to male-greater variability
+        (log VR around +0.17 to +0.31 by grades 2&ndash;4). This developmental reversal means:
+      </p>
+      <ul style="margin:1rem 0 1rem 1.5rem">
+        <li>The variability pattern for a given trait can change substantially across age or grade within the same longitudinal sample.</li>
+        <li>A claim that &ldquo;males are more variable&rdquo; in reading is age-dependent and instrument-dependent, not a stable universal.</li>
+        <li>Any public summary that omits this counterexample would be misleading.</li>
+      </ul>
+      <p>
+        This is why the project design requires the ECLS-K kindergarten reading reversal
+        to remain visible in all public-facing materials.
+      </p>
+    </div>
+  </section>
+
+  <!-- What this project does not claim -->
+  <section class="section">
+    <div class="container">
+      <h2>What This Project Does Not Claim</h2>
+      <ul style="margin:1rem 0 1rem 1.5rem">
+        <li><strong>No biological universality.</strong> Observed score variance on public-use instruments does not equal innate biological variability.</li>
+        <li><strong>No essentialist conclusions.</strong> The project does not claim that sex differences in variability are fixed, immutable, or reflective of fundamental capacities.</li>
+        <li><strong>No claim of stability across instruments.</strong> A result on one measure in one population at one age does not generalize to other measures, populations, or ages without explicit evidence.</li>
+        <li><strong>No claim that supporting evidence confirms the headline.</strong> Supporting and provisional datasets are retained for transparency and domain breadth, not because they reinforce the headline pattern.</li>
+        <li><strong>No pooling of incomparable instruments.</strong> The project does not combine raw scores from different instruments into a single pooled estimate.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+</body>
+</html>

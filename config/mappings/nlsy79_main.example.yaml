@@ -1,0 +1,23 @@
+dataset_id: nlsy79_main
+table_shape: wide
+columns:
+  person_id: person_id
+  sex: sex
+  age: age
+  weight: sample_weight_81_asvab
+traits:
+  asvab_subtests:
+    general_science: GS
+    arithmetic_reasoning: AR
+    word_knowledge: WK
+    paragraph_comprehension: PC
+    numerical_operations: NO
+    coding_speed: CS
+    auto_and_shop_information: AS
+    mathematics_knowledge: MK
+    mechanical_comprehension: MC
+    electronics_information: EI
+value_maps:
+  sex:
+    male: [1, "1", "M", "Male", "MALE"]
+    female: [2, "2", "F", "Female", "FEMALE"]

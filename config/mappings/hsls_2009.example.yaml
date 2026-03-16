@@ -1,0 +1,33 @@
+dataset_id: hsls_2009
+source_format: hsls_repeated_wave_csv
+person_id: STU_ID
+sex: X1SEX
+country: United States
+archive_member: hsls_17_student_pets_sr_v1_0.csv
+design_strata: STRAT_ID
+design_psu: PSU
+waves:
+  "1":
+    label: fall_2009_grade_9
+    grade_band: "9"
+    weight: W2W1STU
+    replicate_weight_prefix: W2W1STU
+    replicate_weight_count: 200
+    replicate_weight_digits: 3
+    replicate_method: brr
+  "2":
+    label: spring_2012_grade_11
+    grade_band: "11"
+    weight: W2W1STU
+    replicate_weight_prefix: W2W1STU
+    replicate_weight_count: 200
+    replicate_weight_digits: 3
+    replicate_method: brr
+traits:
+  math_achievement:
+    "1": X1TXMSCR
+    "2": X2TXMSCR
+value_maps:
+  sex:
+    male: [1, "1", "M", "Male", "MALE"]
+    female: [2, "2", "F", "Female", "FEMALE"]

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sex Differences in Variability</title>
+  <meta name="description" content="Descriptive estimates of sex differences in variability across cognitive, achievement, and physical traits using 14 public-use datasets.">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="results.html">Results</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="methods.html">Methods</a></li>
+      <li><a href="limits.html">Limits</a></li>
+      <li><a href="explanations.html">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>Sex Differences in Variability Across Public-Use Datasets</h1>
+    <p class="hero__subtitle">
+      This project estimates where sex differences in score variability appear&mdash;and where they
+      do not&mdash;across cognitive, achievement, and physical traits, using 14 public-use datasets
+      spanning school-age children through older adults. The analysis is descriptive, not causal.
+    </p>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="container">
+      <h2>Headline Findings</h2>
+      <p>
+        The strongest confirmatory evidence currently spans 50 headline-eligible cells across
+        14 live datasets. Within that headline layer, the prevailing pattern is male-greater
+        variability, but the pattern is not universal.
+      </p>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-card__value">50</div>
+          <div class="stat-card__label">Headline-eligible confirmatory cells</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">94%</div>
+          <div class="stat-card__label">Show male-greater variability</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">14</div>
+          <div class="stat-card__label">Public-use datasets</div>
+        </div>
+      </div>
+
+      <p>
+        The strongest positive confirmatory cell is <strong>Numeracy</strong> in PIAAC cycle&nbsp;2,
+        adults aged 60&ndash;65 (variance ratio&nbsp;1.46&times;&mdash;males 46% more variable).
+        The supporting-evidence layer adds 172 inferential rows from NHANES, HRS, and PSID that
+        broaden age and domain coverage but remain below headline quality.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="callout">
+        <div class="callout__title">Strongest counterexample</div>
+        <p>
+          <strong>Reading achievement</strong> in ECLS-K:2011, fall kindergarten 2010, shows
+          substantially greater <em>female</em> variability (variance ratio&nbsp;0.10&times;&mdash;male
+          variance is roughly one-tenth of female). This is the most extreme cell in the entire
+          headline layer and should temper any interpretation that male-greater variability is
+          universal across all traits, ages, and instruments.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Confirmatory Forest Plot</h2>
+      <p>Each dot is one headline-eligible cell. Values above 1.0&times; indicate male-greater variability; below 1.0&times; indicate female-greater.</p>
+      <div id="chart-forest" style="overflow-x:auto"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Median Variance Ratio by Dataset</h2>
+      <p>Bars show the median variance ratio within each dataset&ndash;trait family combination. Longer bars to the right of 1.0&times; indicate larger median male-greater variability.</p>
+      <div id="chart-hbar" style="overflow-x:auto"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Explore</h2>
+      <div class="stats">
+        <a href="results.html" class="stat-card" style="text-decoration:none;color:inherit">
+          <div class="stat-card__value" style="font-size:1.25rem">Results</div>
+          <div class="stat-card__label">Headline confirmatory evidence, supporting evidence, and robustness checks</div>
+        </a>
+        <a href="datasets.html" class="stat-card" style="text-decoration:none;color:inherit">
+          <div class="stat-card__value" style="font-size:1.25rem">Datasets</div>
+          <div class="stat-card__label">All 14 live datasets, what each contributes, and evidence tier</div>
+        </a>
+        <a href="methods.html" class="stat-card" style="text-decoration:none;color:inherit">
+          <div class="stat-card__value" style="font-size:1.25rem">Methods</div>
+          <div class="stat-card__label">Variance ratio, survey-weight handling, and inference modes</div>
+        </a>
+        <a href="limits.html" class="stat-card" style="text-decoration:none;color:inherit">
+          <div class="stat-card__value" style="font-size:1.25rem">Limits</div>
+          <div class="stat-card__label">Descriptive scope, public-use constraints, and interpretation guardrails</div>
+        </a>
+        <a href="explanations.html" class="stat-card" style="text-decoration:none;color:inherit">
+          <div class="stat-card__value" style="font-size:1.25rem">Explanations</div>
+          <div class="stat-card__label">X-linked dosage compensation as a partial biological explanation</div>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="assets/js/charts.js"></script>
+<script>
+(function () {
+  // Top 20 headline cells by |VR - 1|
+  var forestData = [
+    {label:'ECLS-K:2011 | Reading | K (fall 2010)',vr:0.101},
+    {label:'PIAAC | Numeracy | 60\u201365',vr:1.457},
+    {label:'PIAAC | Numeracy | 30\u201334',vr:1.443},
+    {label:'PIAAC | Adaptive problem solving | 45\u201349',vr:1.406},
+    {label:'PIAAC | Numeracy | 45\u201349',vr:1.384},
+    {label:'PIAAC | Adaptive problem solving | 35\u201339',vr:1.384},
+    {label:'PIAAC | Literacy | 60\u201365',vr:1.382},
+    {label:'ECLS-K:2011 | Reading | 4th (spring 2015)',vr:1.366},
+    {label:'PIAAC | Adaptive problem solving | 60\u201365',vr:1.345},
+    {label:'ECLS-K:2011 | Reading | 2nd (spring 2013)',vr:1.319},
+    {label:'PIAAC | Numeracy | 35\u201339',vr:1.319},
+    {label:'PISA 2022 | Math | 15-year-olds',vr:1.301},
+    {label:'ECLS-K:2011 | Math | 2nd (spring 2013)',vr:1.288},
+    {label:'ECLS-K:2011 | Math | 2nd (fall 2012)',vr:1.283},
+    {label:'ECLS-K:2011 | Reading | 3rd (spring 2014)',vr:1.279},
+    {label:'ECLS-K:2011 | Reading | K (spring 2011)',vr:1.278},
+    {label:'PISA 2022 | Science | 15-year-olds',vr:1.249},
+    {label:'ECLS-K:2011 | Math | K (spring 2011)',vr:1.244},
+    {label:'PIAAC | Literacy | 45\u201349',vr:1.235},
+    {label:'PIAAC | Numeracy | 20\u201324',vr:1.225}
+  ];
+
+  // Dataset-family median VR
+  var hbarData = [
+    {label:'NLSY79 Child/YA | achievement',vr:1.437},
+    {label:'NLSY79 Child/YA | cognition',vr:1.378},
+    {label:'NLSY97 | cognition',vr:1.284},
+    {label:'PISA 2022 | achievement',vr:1.249},
+    {label:'NLSY79 | cognition',vr:1.229},
+    {label:'PSID CDS/TAS | unknown',vr:1.216},
+    {label:'ICILS 2023 | digital skills',vr:1.208},
+    {label:'ECLS-K:2011 | achievement',vr:1.184},
+    {label:'PIAAC cycle 2 | adult skills',vr:1.142},
+    {label:'PSID CDS/TAS | achievement',vr:1.140},
+    {label:'HSLS:09 | achievement',vr:1.135},
+    {label:'TIMSS 2023 | achievement',vr:1.132},
+    {label:'TIMSS 2019 | achievement',vr:1.116},
+    {label:'PSID CDS/TAS | physical',vr:1.090},
+    {label:'NLSY79 Child/YA | vocabulary',vr:1.047},
+    {label:'NHANES | physical',vr:1.040},
+    {label:'NNYFS 2012 | physical',vr:1.009},
+    {label:'PIRLS 2021 | achievement',vr:0.993}
+  ];
+
+  function render() {
+    charts.forest(document.getElementById('chart-forest'), forestData, {
+      title: 'Headline confirmatory cells \u2014 variance ratio',
+      varianceRatio: true
+    });
+    charts.hbar(document.getElementById('chart-hbar'), hbarData, {
+      title: 'Median variance ratio by dataset \u00d7 trait family',
+      varianceRatio: true
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    render();
+
+  });
+})();
+</script>
+
+</body>
+</html>

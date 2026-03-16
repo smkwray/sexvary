@@ -1,0 +1,259 @@
+traits:
+  - id: general_intelligence_g
+    label: "General intelligence / g"
+    family: cognition
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+    notes: "Use precomputed g if provided; otherwise support reproducible factor-score derivation."
+
+  - id: afqt
+    label: "AFQT"
+    family: cognition
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: asvab_subtests
+    label: "ASVAB subtests"
+    family: cognition
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: ppvt
+    label: "PPVT / vocabulary"
+    family: vocabulary
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: piat_math
+    label: "PIAT math"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: piat_reading_recognition
+    label: "PIAT reading recognition"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: piat_reading_comprehension
+    label: "PIAT reading comprehension"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: reading_achievement
+    label: "Reading achievement"
+    family: achievement
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: reading_informational
+    label: "Reading informational"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: reading_literary
+    label: "Reading literary"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: math_achievement
+    label: "Math achievement"
+    family: achievement
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: science_achievement
+    label: "Science achievement"
+    family: achievement
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: algebraic_reasoning
+    label: "Algebraic reasoning"
+    family: achievement
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: social_studies_achievement
+    label: "Social studies achievement"
+    family: achievement
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: executive_function
+    label: "Executive function"
+    family: cognition
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: working_memory
+    label: "Working memory / digit span"
+    family: cognition
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: literacy
+    label: "Literacy"
+    family: adult_skills
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: numeracy
+    label: "Numeracy"
+    family: adult_skills
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: adaptive_problem_solving
+    label: "Adaptive problem solving"
+    family: adult_skills
+    scale_type: continuous
+    priority: confirmatory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: creative_thinking
+    label: "Creative thinking"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: computer_information_literacy
+    label: "Computer and information literacy"
+    family: digital_skills
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: computational_thinking
+    label: "Computational thinking"
+    family: digital_skills
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: woodcock_johnson
+    label: "Woodcock-Johnson achievement"
+    family: achievement
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: ahpvt
+    label: "Add Health Picture Vocabulary Test"
+    family: vocabulary
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: immediate_recall
+    label: "Immediate recall"
+    family: later_life_cognition
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: delayed_recall
+    label: "Delayed recall"
+    family: later_life_cognition
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: serial_7s
+    label: "Serial 7s"
+    family: later_life_cognition
+    scale_type: bounded_count
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+    cautions: ["bounded_scale_warning"]
+
+  - id: total_cognition
+    label: "Total cognition summary"
+    family: later_life_cognition
+    scale_type: bounded_count
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+    cautions: ["bounded_scale_warning"]
+
+  - id: adult_cognition_screen
+    label: "Adult cognition screen"
+    family: later_life_cognition
+    scale_type: bounded_count
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+    cautions: ["bounded_scale_warning"]
+
+  - id: midus_cognition
+    label: "MIDUS cognition"
+    family: cognition
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: big_five
+    label: "Big Five personality"
+    family: personality
+    scale_type: ordinal_or_bounded_composite
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+    cautions:
+      - bounded_scale_warning
+      - interpret_secondary_only
+
+  - id: height_cm
+    label: "Height (cm)"
+    family: physical
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: weight_kg
+    label: "Weight (kg)"
+    family: physical
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: bmi
+    label: "BMI"
+    family: physical
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: waist_cm
+    label: "Waist circumference (cm)"
+    family: physical
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio]
+
+  - id: grip_strength_kg
+    label: "Grip strength (kg)"
+    family: physical
+    scale_type: continuous
+    priority: secondary
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Datasets &mdash; Sex Differences in Variability</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Results</a></li>
+      <li><a href="datasets.html" class="active">Datasets</a></li>
+      <li><a href="methods.html">Methods</a></li>
+      <li><a href="limits.html">Limits</a></li>
+      <li><a href="explanations.html">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Datasets</h1>
+    <p>This project draws on 14 live datasets spanning school-age achievement, adult skills, physical health, panel cognition, and later-life measures. Each dataset carries an evidence tier that determines whether its results enter the headline claim.</p>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Dataset Inventory</h2>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>All 14 live datasets with evidence tier and summary statistics</caption>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Tier</th>
+              <th class="num">Cells</th>
+              <th class="num">Combined N</th>
+              <th class="num">Median VR</th>
+              <th class="num">% Male-greater</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>ECLS-K:2011</td><td><span class="badge badge--headline">headline</span></td><td class="num">23</td><td class="num">182,376</td><td class="num">1.18&times;</td><td class="num">85%</td></tr>
+            <tr><td>HSLS:09</td><td><span class="badge badge--headline">headline</span></td><td class="num">2</td><td class="num">37,246</td><td class="num">1.14&times;</td><td class="num">100%</td></tr>
+            <tr><td>ICILS 2023</td><td><span class="badge badge--headline">headline</span></td><td class="num">2</td><td class="num">4,642</td><td class="num">1.21&times;</td><td class="num">100%</td></tr>
+            <tr><td>PIAAC cycle 2</td><td><span class="badge badge--headline">headline</span></td><td class="num">30</td><td class="num">11,295</td><td class="num">1.14&times;</td><td class="num">87%</td></tr>
+            <tr><td>PIRLS 2021</td><td><span class="badge badge--headline">headline</span></td><td class="num">3</td><td class="num">4,968</td><td class="num">0.99&times;</td><td class="num">33%</td></tr>
+            <tr><td>PISA 2022</td><td><span class="badge badge--headline">headline</span></td><td class="num">3</td><td class="num">13,641</td><td class="num">1.25&times;</td><td class="num">100%</td></tr>
+            <tr><td>TIMSS 2019</td><td><span class="badge badge--headline">headline</span></td><td class="num">4</td><td class="num">46,200</td><td class="num">1.12&times;</td><td class="num">100%</td></tr>
+            <tr><td>TIMSS 2023</td><td><span class="badge badge--headline">headline</span></td><td class="num">4</td><td class="num">34,320</td><td class="num">1.13&times;</td><td class="num">100%</td></tr>
+            <tr><td>NHANES selected cycles</td><td><span class="badge badge--supporting">supporting</span></td><td class="num">132</td><td class="num">82,600</td><td class="num">1.04&times;</td><td class="num">58%</td></tr>
+            <tr><td>NNYFS 2012</td><td><span class="badge badge--supporting">supporting</span></td><td class="num">14</td><td class="num">6,778</td><td class="num">1.01&times;</td><td class="num">50%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td><span class="badge badge--provisional">supporting</span></td><td class="num">40</td><td class="num">&mdash;</td><td class="num">1.10&times;</td><td class="num">68%</td></tr>
+            <tr><td>NLSY79 main</td><td><span class="badge badge--method">method-limited</span></td><td class="num">18</td><td class="num">&mdash;</td><td class="num">1.23&times;</td><td class="num">89%</td></tr>
+            <tr><td>NLSY97 main</td><td><span class="badge badge--method">method-limited</span></td><td class="num">11</td><td class="num">&mdash;</td><td class="num">1.28&times;</td><td class="num">100%</td></tr>
+            <tr><td>NLSY79 Child/YA</td><td><span class="badge badge--provisional">provisional</span></td><td class="num">5</td><td class="num">&mdash;</td><td class="num">1.38&times;</td><td class="num">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Confirmatory Datasets</h2>
+      <p>These datasets provide the strongest evidence. They use plausible values and/or replicate weights for design-aware inference and cover confirmatory-priority traits.</p>
+
+      <div class="dataset-group">
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">PIAAC Cycle 2</span><span class="badge badge--headline">headline</span></div>
+          <p>Adult skills (literacy, numeracy, adaptive problem solving), ages 16&ndash;65 across 10 age bands. PV + replicate weights. 30 headline cells. Contains the strongest positive cell: numeracy at ages 60&ndash;65 (VR 1.46&times;).</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">ECLS-K:2011</span><span class="badge badge--headline">headline</span></div>
+          <p>Kindergarten cohort followed through 5th grade. Reading and math across 6 waves. Stratified PSU bootstrap. Contains the strongest counterexample: kindergarten reading (VR 0.10&times;).</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">PISA 2022</span><span class="badge badge--headline">headline</span></div>
+          <p>Math, reading, science for 15-year-olds. PV + BRR. U.S. sample. 3 headline cells. Math VR 1.30&times;.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">TIMSS 2019</span><span class="badge badge--headline">headline</span></div>
+          <p>Math and science at grades 4 and 8. PV + JRR. 4 headline cells, all male-greater.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">TIMSS 2023</span><span class="badge badge--headline">headline</span></div>
+          <p>Same design as TIMSS 2019, 2023 cycle. 4 headline cells, all male-greater.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">PIRLS 2021</span><span class="badge badge--headline">headline</span></div>
+          <p>Grade 4 reading. PV + JRR. 3 cells. Overall reading VR near 0.99&times;&mdash;essentially equal variance.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">HSLS:09</span><span class="badge badge--headline">headline</span></div>
+          <p>Math achievement, 9th&ndash;11th grade. BRR replicate weights. 2 headline cells.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">ICILS 2023</span><span class="badge badge--headline">headline</span></div>
+          <p>Computer/information literacy and computational thinking, 8th grade. PV + JRR. 2 headline cells.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Supporting Datasets</h2>
+      <p>These datasets add domain coverage but use simpler inference methods or carry weight-related caveats.</p>
+      <div class="dataset-group">
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">NHANES Selected Cycles</span><span class="badge badge--supporting">supporting</span></div>
+          <p>Physical traits (height, weight, BMI, grip strength), 2011&ndash;2023. Design-aware bootstrap. Grip strength consistently male-greater; BMI mixed. Cognition screen QA-only.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">NNYFS 2012</span><span class="badge badge--supporting">supporting</span></div>
+          <p>Youth physical traits. Design-aware bootstrap. Adds youth-specific physical perspective.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">PSID CDS / TAS</span><span class="badge badge--provisional">supporting</span></div>
+          <p>Achievement (Woodcock-Johnson, SAT, ACT) and anthropometry across childhood and young adulthood. Simple-design inference. Some TAS rows provisional.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Anchor and Replication Datasets</h2>
+      <p>NLSY datasets serve as replication anchors but use simple SE approximations&mdash;method-limited, excluded from headline claims.</p>
+      <div class="dataset-group">
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">NLSY79 Main</span><span class="badge badge--method">method-limited</span></div>
+          <p>Adult cognition (ASVAB-derived), 2 age bands. Median VR 1.23&times;, 89% male-greater.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">NLSY97 Main</span><span class="badge badge--method">method-limited</span></div>
+          <p>Adult cognition, 1 age band. Median VR 1.28&times;, 100% male-greater.</p>
+        </div>
+        <div class="dataset-card">
+          <div class="dataset-card__header"><span class="dataset-card__name">NLSY79 Child and Young Adult</span><span class="badge badge--provisional">provisional</span></div>
+          <p>PPVT, PIAT reading/math, digit span. Some cells rely on fallback maternal weights. Excluded from headline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Variance Ratio Across Age</h2>
+      <p>Each panel shows how the variance ratio changes across age or grade bands within a dataset. The dashed line at 1.0&times; marks equal variance.</p>
+      <div id="chart-age" style="overflow-x:auto"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="assets/js/charts.js"></script>
+<script>
+(function () {
+  var ageData = [
+    {name:'ECLS-K:2011', points:[
+      {label:'K',logvr:-0.319},{label:'1',logvr:0.030},{label:'2',logvr:0.180},{label:'3',logvr:0.176},{label:'4',logvr:0.176},{label:'5',logvr:0.138}
+    ]},
+    {name:'HSLS:09', points:[{label:'9',logvr:0.128},{label:'11',logvr:0.125}]},
+    {name:'NHANES', points:[
+      {label:'0\u20133',logvr:-0.019},{label:'4\u20137',logvr:-0.056},{label:'8\u201311',logvr:0.007},{label:'12\u201315',logvr:0.458},{label:'16\u201319',logvr:0.141},{label:'20\u201323',logvr:0.047},{label:'60\u201363',logvr:0.020},{label:'68\u201371',logvr:0.057}
+    ]},
+    {name:'NLSY79 main', points:[{label:'16\u201319',logvr:0.312},{label:'20\u201323',logvr:0.261}]},
+    {name:'NNYFS 2012', points:[{label:'4\u20137',logvr:-0.153},{label:'8\u201311',logvr:0.250},{label:'12\u201315',logvr:0.289}]},
+    {name:'PIAAC cycle 2', points:[
+      {label:'16\u201319',logvr:0.060},{label:'20\u201324',logvr:0.181},{label:'25\u201329',logvr:0.065},{label:'30\u201334',logvr:0.199},{label:'35\u201339',logvr:0.281},{label:'40\u201344',logvr:-0.024},{label:'45\u201349',logvr:0.292},{label:'50\u201354',logvr:0.028},{label:'55\u201359',logvr:0.102},{label:'60\u201365',logvr:0.332}
+    ]},
+    {name:'PIRLS 2021', points:[{label:'4',logvr:0.003}]},
+    {name:'PISA 2022', points:[{label:'15',logvr:0.213}]},
+    {name:'PSID CDS/TAS', points:[{label:'0\u20133',logvr:0.097},{label:'4\u20137',logvr:0.180},{label:'8\u201311',logvr:-0.072},{label:'12\u201315',logvr:0.148}]},
+    {name:'TIMSS 2019', points:[{label:'4',logvr:0.076},{label:'8',logvr:0.154}]},
+    {name:'TIMSS 2023', points:[{label:'4',logvr:0.149},{label:'8',logvr:0.105}]}
+  ];
+
+  function render() {
+    charts.ageProfile(document.getElementById('chart-age'), ageData);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { render();});
+})();
+</script>
+
+</body>
+</html>

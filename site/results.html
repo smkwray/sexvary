@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Results &mdash; Sex Differences in Variability</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html" class="active">Results</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="methods.html">Methods</a></li>
+      <li><a href="limits.html">Limits</a></li>
+      <li><a href="explanations.html">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Results</h1>
+    <p>Headline confirmatory evidence is presented first. Supporting and provisional evidence follows in a separate section and should not be merged into the headline claim.</p>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Headline Confirmatory Evidence</h2>
+      <p>
+        Across headline-eligible confirmatory cells, male-greater variability appears in about 94% of cells.
+        Seven datasets contribute confirmatory-priority cells with proper survey-design inference.
+        A variance ratio above 1.0&times; means males are more variable; below 1.0&times; means females are.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Confirmatory dataset summary</caption>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th class="num">Cells</th>
+              <th class="num">With CI</th>
+              <th class="num">Headline</th>
+              <th class="num">Median VR</th>
+              <th class="num">% Male-greater</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>ECLS-K:2011</td><td class="num">32</td><td class="num">26</td><td class="num">23</td><td class="num">1.18&times;</td><td class="num">85%</td></tr>
+            <tr><td>HSLS:09</td><td class="num">2</td><td class="num">2</td><td class="num">2</td><td class="num">1.14&times;</td><td class="num">100%</td></tr>
+            <tr><td>PIAAC cycle 2</td><td class="num">30</td><td class="num">30</td><td class="num">30</td><td class="num">1.14&times;</td><td class="num">87%</td></tr>
+            <tr><td>PIRLS 2021</td><td class="num">1</td><td class="num">1</td><td class="num">1</td><td class="num">0.99&times;</td><td class="num">0%</td></tr>
+            <tr><td>PISA 2022</td><td class="num">3</td><td class="num">3</td><td class="num">3</td><td class="num">1.25&times;</td><td class="num">100%</td></tr>
+            <tr><td>TIMSS 2019</td><td class="num">4</td><td class="num">4</td><td class="num">4</td><td class="num">1.12&times;</td><td class="num">100%</td></tr>
+            <tr><td>TIMSS 2023</td><td class="num">4</td><td class="num">4</td><td class="num">4</td><td class="num">1.13&times;</td><td class="num">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="chart-forest" style="overflow-x:auto"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Leading Headline-Eligible Cells</h2>
+      <p>The 12 most extreme headline-eligible confirmatory cells, sorted by distance from equal variance (1.0&times;).</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Top headline-eligible confirmatory cells</caption>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Wave / Cycle</th>
+              <th>Age</th>
+              <th>Trait</th>
+              <th class="num">VR</th>
+              <th class="num">Direction</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>ECLS-K:2011</td><td>Fall kindergarten 2010</td><td>K</td><td>Reading achievement</td><td class="num">0.10&times;</td><td><span class="badge badge--qa">F &gt; M</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>60&ndash;65</td><td>Numeracy</td><td class="num">1.46&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>30&ndash;34</td><td>Numeracy</td><td class="num">1.44&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>45&ndash;49</td><td>Adaptive problem solving</td><td class="num">1.41&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>45&ndash;49</td><td>Numeracy</td><td class="num">1.38&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>35&ndash;39</td><td>Adaptive problem solving</td><td class="num">1.38&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>60&ndash;65</td><td>Literacy</td><td class="num">1.38&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>ECLS-K:2011</td><td>Spring 4th grade 2015</td><td>4</td><td>Reading achievement</td><td class="num">1.37&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>60&ndash;65</td><td>Adaptive problem solving</td><td class="num">1.35&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>ECLS-K:2011</td><td>Spring 2nd grade 2013</td><td>2</td><td>Reading achievement</td><td class="num">1.32&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PIAAC cycle 2</td><td>Cycle 2</td><td>35&ndash;39</td><td>Numeracy</td><td class="num">1.32&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+            <tr><td>PISA 2022</td><td>2022</td><td>15-year-olds</td><td>Math achievement</td><td class="num">1.30&times;</td><td><span class="badge badge--headline">M &gt; F</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <div class="callout__title">Note on the ECLS-K reading reversal</div>
+        <p>
+          The fall kindergarten reading cell (VR&nbsp;0.10&times;) means male variance is roughly
+          one-tenth of female variance at school entry. By later grades, ECLS-K reading shifts to
+          male-greater variability (VR&nbsp;1.37&times; by 4th grade). This developmental reversal is
+          one reason the project does not claim a universal pattern.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Supporting Evidence</h2>
+      <p>
+        The following datasets broaden the project beyond the main confirmatory layer. They add
+        domain coverage&mdash;particularly in physical traits and panel data&mdash;but remain
+        below headline quality. They should be interpreted as supporting or provisional evidence,
+        not folded into the headline claim.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Supporting-evidence summary</caption>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Priority</th>
+              <th class="num">Rows</th>
+              <th class="num">With CI</th>
+              <th class="num">Median VR</th>
+              <th class="num">% Male-greater</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>NHANES selected cycles</td><td><span class="badge badge--supporting">secondary</span></td><td class="num">250</td><td class="num">73</td><td class="num">1.13&times;</td><td class="num">71%</td></tr>
+            <tr><td>NHANES selected cycles</td><td><span class="badge badge--supporting">exploratory</span></td><td class="num">222</td><td class="num">59</td><td class="num">0.90&times;</td><td class="num">41%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td><span class="badge badge--supporting">secondary</span></td><td class="num">81</td><td class="num">14</td><td class="num">1.10&times;</td><td class="num">71%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td><span class="badge badge--supporting">exploratory</span></td><td class="num">19</td><td class="num">14</td><td class="num">1.09&times;</td><td class="num">71%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td><span class="badge badge--provisional">unknown</span></td><td class="num">12</td><td class="num">12</td><td class="num">1.22&times;</td><td class="num">58%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Cell Explorer</h2>
+      <p>
+        Browse all inferential cells with sex-specific statistics. Filter by dataset or trait.
+        Where available, male and female weighted means and variances are shown.
+        PV-based datasets report the mean difference across plausible-value draws instead of individual means.
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
+        <select id="filter-dataset" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;background:var(--card-bg);color:var(--text);font-size:0.9rem">
+          <option value="">All datasets</option>
+        </select>
+        <select id="filter-evidence" style="padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:6px;background:var(--card-bg);color:var(--text);font-size:0.9rem">
+          <option value="">All tiers</option>
+          <option value="headline_eligible">Headline-eligible</option>
+          <option value="supporting">Supporting</option>
+          <option value="method_limited">Method-limited</option>
+          <option value="provisional">Provisional</option>
+        </select>
+        <span id="cell-count" style="color:var(--text-muted);font-size:0.9rem;align-self:center"></span>
+      </div>
+      <div class="table-wrap" style="max-height:520px;overflow-y:auto">
+        <table class="data-table" id="cell-table">
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Trait</th>
+              <th>Age</th>
+              <th class="num">Male N</th>
+              <th class="num">Female N</th>
+              <th class="num">Male Mean</th>
+              <th class="num">Female Mean</th>
+              <th class="num">Mean Diff</th>
+              <th class="num">Male Var</th>
+              <th class="num">Female Var</th>
+              <th class="num">VR</th>
+              <th>Tier</th>
+            </tr>
+          </thead>
+          <tbody id="cell-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--wide">
+      <h2>Robustness Checks</h2>
+      <p>
+        Each supporting dataset has been compared against unweighted and winsorized variants.
+        Winsorization generally moves results less than dropping survey weights.
+        Sign change rates remain low across all variants.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Robustness comparison across variants</caption>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Variant</th>
+              <th class="num">Matched cells</th>
+              <th class="num">Median |&Delta;|</th>
+              <th class="num">Sign change rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Local NLSY</td><td>Unweighted</td><td class="num">34</td><td class="num">0.030</td><td class="num">1.9%</td></tr>
+            <tr><td>Local NLSY</td><td>Winsorized</td><td class="num">34</td><td class="num">0.002</td><td class="num">0.0%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td>Unweighted</td><td class="num">40</td><td class="num">0.058</td><td class="num">4.5%</td></tr>
+            <tr><td>PSID CDS / TAS</td><td>Winsorized</td><td class="num">40</td><td class="num">0.018</td><td class="num">2.7%</td></tr>
+            <tr><td>NHANES</td><td>Unweighted</td><td class="num">132</td><td class="num">0.050</td><td class="num">2.5%</td></tr>
+            <tr><td>NHANES</td><td>Winsorized</td><td class="num">132</td><td class="num">0.019</td><td class="num">1.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="chart-robustness" style="overflow-x:auto"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="assets/js/charts.js"></script>
+<script>
+(function () {
+  var forestData = [
+    {label:'ECLS-K:2011 | Reading | K (fall 2010)',vr:0.101},
+    {label:'PIAAC | Numeracy | 60\u201365',vr:1.457},
+    {label:'PIAAC | Numeracy | 30\u201334',vr:1.443},
+    {label:'PIAAC | Adaptive problem solving | 45\u201349',vr:1.406},
+    {label:'PIAAC | Numeracy | 45\u201349',vr:1.384},
+    {label:'PIAAC | Adaptive problem solving | 35\u201339',vr:1.384},
+    {label:'PIAAC | Literacy | 60\u201365',vr:1.382},
+    {label:'ECLS-K:2011 | Reading | 4th (spring 2015)',vr:1.366},
+    {label:'PIAAC | Adaptive problem solving | 60\u201365',vr:1.345},
+    {label:'ECLS-K:2011 | Reading | 2nd (spring 2013)',vr:1.319},
+    {label:'PIAAC | Numeracy | 35\u201339',vr:1.319},
+    {label:'PISA 2022 | Math | 15-year-olds',vr:1.301},
+    {label:'ECLS-K:2011 | Math | 2nd (spring 2013)',vr:1.288},
+    {label:'ECLS-K:2011 | Math | 2nd (fall 2012)',vr:1.283},
+    {label:'ECLS-K:2011 | Reading | 3rd (spring 2014)',vr:1.279},
+    {label:'ECLS-K:2011 | Reading | K (spring 2011)',vr:1.278},
+    {label:'PISA 2022 | Science | 15-year-olds',vr:1.249},
+    {label:'ECLS-K:2011 | Math | K (spring 2011)',vr:1.244},
+    {label:'PIAAC | Literacy | 45\u201349',vr:1.235},
+    {label:'PIAAC | Numeracy | 20\u201324',vr:1.225}
+  ];
+
+  var robData = [
+    {label:'Local NLSY | unweighted', delta:0.030, sign:0.019},
+    {label:'Local NLSY | winsorized', delta:0.002, sign:0.000},
+    {label:'PSID CDS/TAS | unweighted', delta:0.058, sign:0.045},
+    {label:'PSID CDS/TAS | winsorized', delta:0.018, sign:0.027},
+    {label:'NHANES | unweighted', delta:0.050, sign:0.025},
+    {label:'NHANES | winsorized', delta:0.019, sign:0.013}
+  ];
+
+  function render() {
+    charts.forest(document.getElementById('chart-forest'), forestData, {
+      title:'Top 20 headline confirmatory cells \u2014 variance ratio'
+    });
+    charts.robustness(document.getElementById('chart-robustness'), robData);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { render(); });
+})();
+
+// Cell explorer
+(function () {
+  var allData = [];
+  var badges = {
+    headline_eligible: 'badge--headline',
+    supporting: 'badge--supporting',
+    method_limited: 'badge--method',
+    provisional: 'badge--provisional'
+  };
+
+  function fmt(v) { return v != null ? v.toLocaleString(undefined, {maximumFractionDigits: 2}) : '\u2014'; }
+  function fmtVR(v) { return v ? v.toFixed(3) + '\u00d7' : '\u2014'; }
+  function tierLabel(s) { return s ? s.replace(/_/g, '-') : ''; }
+
+  function renderTable(data) {
+    var tbody = document.getElementById('cell-tbody');
+    tbody.innerHTML = '';
+    data.forEach(function (r) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + r.dataset + '</td>' +
+        '<td>' + r.trait + '</td>' +
+        '<td>' + r.age + '</td>' +
+        '<td class="num">' + (r.male_n || '\u2014') + '</td>' +
+        '<td class="num">' + (r.female_n || '\u2014') + '</td>' +
+        '<td class="num">' + fmt(r.male_mean) + '</td>' +
+        '<td class="num">' + fmt(r.female_mean) + '</td>' +
+        '<td class="num">' + fmt(r.mean_diff) + '</td>' +
+        '<td class="num">' + fmt(r.male_var) + '</td>' +
+        '<td class="num">' + fmt(r.female_var) + '</td>' +
+        '<td class="num">' + fmtVR(r.vr) + '</td>' +
+        '<td><span class="badge ' + (badges[r.evidence] || 'badge--qa') + '">' + tierLabel(r.evidence) + '</span></td>';
+      tbody.appendChild(tr);
+    });
+    document.getElementById('cell-count').textContent = data.length + ' cells';
+  }
+
+  function applyFilters() {
+    var ds = document.getElementById('filter-dataset').value;
+    var ev = document.getElementById('filter-evidence').value;
+    var filtered = allData.filter(function (r) {
+      return (!ds || r.dataset === ds) && (!ev || r.evidence === ev);
+    });
+    renderTable(filtered);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('assets/data.json')
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        allData = data;
+        // Populate dataset dropdown
+        var datasets = [];
+        var seen = {};
+        data.forEach(function (r) {
+          if (!seen[r.dataset]) { seen[r.dataset] = true; datasets.push(r.dataset); }
+        });
+        datasets.sort();
+        var sel = document.getElementById('filter-dataset');
+        datasets.forEach(function (d) {
+          var opt = document.createElement('option');
+          opt.value = d; opt.textContent = d;
+          sel.appendChild(opt);
+        });
+        sel.addEventListener('change', applyFilters);
+        document.getElementById('filter-evidence').addEventListener('change', applyFilters);
+        applyFilters();
+      });
+  });
+})();
+</script>
+
+</body>
+</html>

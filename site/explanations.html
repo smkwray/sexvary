@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Possible Explanations &mdash; Sex Differences in Variability</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Results</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="methods.html">Methods</a></li>
+      <li><a href="limits.html">Limits</a></li>
+      <li><a href="explanations.html" class="active">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Why Might Males Show Greater Variability?</h1>
+    <p>This project is descriptive&mdash;it documents patterns, not causes. But the question of <em>why</em> the pattern exists is scientifically important. This page summarizes one biologically plausible partial explanation that has received increasing empirical support. It is not the only possible contributor, and it does not explain most trait variance.</p>
+  </div>
+</header>
+
+<main class="prose-tight">
+
+  <section class="section">
+    <div class="container">
+      <h2>A Possible X-Linked Contribution</h2>
+      <p>
+        One biologically plausible <strong>partial</strong> explanation for greater male variability
+        is the asymmetric genetics of the X chromosome. Males are hemizygous for most
+        non-pseudoautosomal X-linked loci, so X-linked allelic effects are more directly exposed.
+        Females have two X chromosomes, but one is largely inactivated in each cell, producing
+        mosaic expression rather than uniform diploid expression. Under standard
+        dosage-compensation models, that architecture predicts greater additive genetic variance
+        from X-linked loci in males than in
+        females.<sup><a href="#ref-sidorenko">1</a>,&thinsp;<a href="#ref-jiang">2</a></sup>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Brain-Related Traits</h2>
+      <p>
+        This possibility is especially relevant for brain-related traits. The X chromosome is
+        unusually relevant to brain biology, and a 2025 UK Biobank brain XWAS reported that many
+        brain imaging traits fit a full-dosage-compensation model, under which males are expected
+        to show roughly twice the genetic variance of females at X-linked loci. In the same study,
+        the sex-stratified analysis identified 25 male-specific non-pseudoautosomal trait&ndash;locus
+        pairs but only 5 female-specific pairs. More broadly, recent UK Biobank and FinnGen analyses
+        also report a pronounced male bias in X-linked heritability, which is consistent with
+        near-complete dosage compensation through X-chromosome
+        inactivation.<sup><a href="#ref-jiang">2</a>,&thinsp;<a href="#ref-fu">3</a></sup>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Methodological Underappreciation</h2>
+      <p>
+        A reason this mechanism may be underappreciated is methodological. The X chromosome is
+        still often omitted or inconsistently analyzed in GWAS, and only 25% of genome-wide
+        summary statistics in the GWAS Catalog for 2021 included X-chromosome results. The brain
+        XWAS also notes that sex-specific variance on the X matters statistically: because PLINK2
+        did not implement the equal-variance X model used in the heritability stage, traits
+        favoring that model had to be analyzed under full-dosage-compensation coding in the
+        association stage. This suggests that models treating the X as an ordinary chromosome by
+        length alone should be read as conservative baselines rather than complete biological
+        accounts.<sup><a href="#ref-sun">4</a>,&thinsp;<a href="#ref-jiang">2</a></sup>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Important Caveats</h2>
+
+      <div class="callout">
+        <div class="callout__title">This is a partial explanation, not a complete one</div>
+        <p>
+          The X chromosome does not explain most heritability for most complex traits. One 2025
+          study estimated that chrX contributes about 3% of autosomal heritability overall, and
+          the brain XWAS found X-linked heritability enrichment for only 2.9% of brain imaging
+          traits, while 39.3% showed depletion relative to chromosome size. There is also at least
+          one narrower human study that did not find evidence that female X-inactivation
+          &ldquo;averaging&rdquo; explained greater male variance in childhood cognitive scores.
+        </p>
+      </div>
+
+      <p>
+        The strongest defensible claim is not that the X chromosome fully explains greater male
+        variability, but that <strong>male hemizygosity together with female X-chromosome
+        inactivation is a plausible, biologically grounded, and probably undermeasured partial
+        contributor</strong>, especially for some
+        brain-related traits.<sup><a href="#ref-fu">3</a>,&thinsp;<a href="#ref-jiang">2</a>,&thinsp;<a href="#ref-giummo">5</a></sup>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Cross-Species Evidence</h2>
+      <p>
+        Cross-species evidence supports the broader sex-chromosome part of the argument. In species
+        with heterogametic females (such as birds, where females are ZW and males are ZZ),
+        variability tends to shift toward females rather than males, which is consistent with a
+        heterogamety or hemizygosity mechanism. But those systems do not use mammalian-style
+        chromosome-wide X inactivation; in birds, dosage compensation is much less effective and
+        more local. So this comparative evidence strengthens the general sex-chromosome hypothesis
+        more than the specifically mammalian claim about female X-inactivation buffering
+        variance.<sup><a href="#ref-reinhold">6</a>,&thinsp;<a href="#ref-itoh">7</a></sup>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>References</h2>
+      <ol style="margin:0 0 0 1.5rem;line-height:1.8">
+        <li id="ref-sidorenko">
+          Sidorenko J, Kassam I, Kemper KE, et al.
+          The effect of X-linked dosage compensation on complex trait variation.
+          <em>Nat Commun.</em> 2019;10(1):3009.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/31285442/">PubMed</a>
+        </li>
+        <li id="ref-jiang">
+          Jiang Z, Sullivan PF, Li T, et al.
+          The X chromosome&rsquo;s influences on the human brain.
+          <em>Sci Adv.</em> 2025;11(4):eadq5360.
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11759047/">PMC</a>
+        </li>
+        <li id="ref-fu">
+          Fu Y, Kentt&auml;mies A, Ruotsalainen S, Pirinen M, Tukiainen T.
+          Role of X chromosome and dosage-compensation mechanisms in complex trait genetics.
+          <em>Am J Hum Genet.</em> 2025;112(6):1330&ndash;1343.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/40359939/">PubMed</a>
+        </li>
+        <li id="ref-sun">
+          Sun L, Wang Z, Lu T, Manolio TA, Paterson AD.
+          eXclusionarY: 10 years later, where are the sex chromosomes in GWASs?
+          <em>Am J Hum Genet.</em> 2023;110(6):903&ndash;912.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/37267899/">PubMed</a>
+        </li>
+        <li id="ref-giummo">
+          Giummo J, Johnson W.
+          Testing for evidence of an X-linked genetic basis for a greater proportion of males with high cognitive ability.
+          <em>Behav Genet.</em> 2012;42(5):808&ndash;819.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/22843342/">PubMed</a>
+        </li>
+        <li id="ref-reinhold">
+          Reinhold K, Engqvist L.
+          The variability is in the sex chromosomes.
+          <em>Evolution.</em> 2013;67(12):3662&ndash;3668.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/24299417/">PubMed</a>
+        </li>
+        <li id="ref-itoh">
+          Itoh Y, Melamed E, Yang X, et al.
+          Dosage compensation is less effective in birds than in mammals.
+          <em>J Biol.</em> 2007;6(1):2.
+          <a href="https://pubmed.ncbi.nlm.nih.gov/17352797/">PubMed</a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+</body>
+</html>

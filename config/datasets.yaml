@@ -1,0 +1,379 @@
+datasets:
+  - id: nlsy79_main
+    name: NLSY79 main
+    tier: 1
+    priority: required
+    access_mode: user_local
+    automation: user_supplied
+    official_url: "https://www.nlsinfo.org/content/access-data-investigator/investigator-user-guide/choose-cohort-dataset"
+    methodology_url: "https://www.nlsinfo.org/home"
+    target_population: "U.S. men and women born 1957-1964"
+    domains: ["general_cognition", "aptitude", "education"]
+    candidate_traits:
+      - general_intelligence_g
+      - afqt
+      - asvab_subtests
+    expected_local_subdir: "data/raw/nlsy/nlsy79_main"
+    notes: >
+      User already has local extracts. Build a flexible mapping layer. Prefer direct support
+      for a precomputed g plus AFQT/ASVAB-derived variables when available.
+    caveats:
+      - "Weights and variable names depend on the extract."
+      - "Do not assume one exact column schema."
+
+  - id: nlsy97_main
+    name: NLSY97 main
+    tier: 1
+    priority: required
+    access_mode: user_local
+    automation: user_supplied
+    official_url: "https://www.nlsinfo.org/content/access-data-investigator/investigator-user-guide/choose-cohort-dataset"
+    methodology_url: "https://www.nlsinfo.org/content/cohorts/nlsy97/using-and-understanding-the-data/nlsy97-documentation"
+    target_population: "U.S. men and women born 1980-1984"
+    domains: ["general_cognition", "aptitude", "education"]
+    candidate_traits:
+      - general_intelligence_g
+      - afqt
+      - asvab_subtests
+    expected_local_subdir: "data/raw/nlsy/nlsy97_main"
+    notes: >
+      Use as a later-cohort replication of NLSY79.
+
+  - id: nlsy79_child_ya
+    name: NLSY79 Child and Young Adult
+    tier: 1
+    priority: required
+    access_mode: user_local
+    automation: user_supplied
+    official_url: "https://www.nlsinfo.org/content/cohorts/nlsy79-children"
+    methodology_url: "https://www.nlsinfo.org/content/cohorts/nlsy79-children/using-and-understanding-the-data/childyoung-adult-documentation"
+    target_population: "Biological children of female NLSY79 respondents"
+    domains: ["development", "achievement", "vocabulary", "working_memory"]
+    candidate_traits:
+      - ppvt
+      - piat_reading_recognition
+      - piat_reading_comprehension
+      - piat_math
+    expected_local_subdir: "data/raw/nlsy/nlsy79_child_ya"
+    notes: >
+      Strong developmental extension. Document clearly that this is not a fully independent
+      nationally representative age sample.
+    caveats:
+      - "Children are linked to NLSY79 mothers."
+      - "Interpret population generalizability carefully."
+
+  - id: piaac_cycle2
+    name: PIAAC cycle 2
+    tier: 1
+    priority: required
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://www.oecd.org/en/data/datasets/piaac-2nd-cycle-database.html"
+    methodology_url: "https://nces.ed.gov/surveys/piaac/2023/technical_notes.asp"
+    target_population: "Adults in participating countries; U.S. public files extend to older ages depending on file"
+    domains: ["literacy", "numeracy", "adaptive_problem_solving"]
+    candidate_traits:
+      - literacy
+      - numeracy
+      - adaptive_problem_solving
+    design_type: "replicate_weights_plus_plausible_values"
+    notes: >
+      High-priority adult replication. Start with the United States, then optionally extend
+      internationally. Use replicate weights and plausible values correctly.
+    caveats:
+      - "Cycle differences require caution."
+      - "Do not average plausible values at the respondent level."
+
+  - id: ecls_k_2011
+    name: ECLS-K:2011
+    tier: 1
+    priority: required
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://nces.ed.gov/ecls/dataproducts.asp"
+    methodology_url: "https://nces.ed.gov/ecls/assessments2011.asp"
+    target_population: "U.S. kindergarten cohort followed through fifth grade"
+    domains: ["reading", "math", "science", "executive_function"]
+    candidate_traits:
+      - reading_achievement
+      - math_achievement
+      - science_achievement
+      - executive_function
+    design_type: "complex_survey_weights"
+    notes: >
+      Strong child-development replication with repeated assessments.
+    caveats:
+      - "Respect wave-specific weights."
+      - "Keep rounds separate before any pooling."
+
+  - id: hsls_2009
+    name: HSLS:09
+    tier: 1
+    priority: required
+    access_mode: public_use_download
+    automation: manual_extraction_likely
+    official_url: "https://nces.ed.gov/surveys/hsls09/hsls09_data.asp"
+    methodology_url: "https://nces.ed.gov/surveys/hsls09/"
+    target_population: "U.S. 9th graders followed into later years"
+    domains: ["mathematics"]
+    candidate_traits:
+      - math_achievement
+    design_type: "complex_survey_weights"
+    notes: >
+      High-priority adolescent mathematics dataset. The first live path uses the
+      2017 PETS/SR student public-use archive with repeated-wave math scores.
+
+  - id: els_2002
+    name: ELS:2002
+    tier: 3
+    priority: optional
+    access_mode: public_use_or_datalab
+    automation: manual_extraction_likely
+    official_url: "https://nces.ed.gov/datalab/onlinecodebook"
+    methodology_url: "https://nces.ed.gov/use-work/resource-library/data/data-file/education-longitudinal-study-20022004-public-use-base-year-first-follow-data-files-and-electronic"
+    target_population: "U.S. 10th grade cohort"
+    domains: ["reading", "math", "science", "social_studies"]
+    candidate_traits:
+      - reading_achievement
+      - math_achievement
+      - science_achievement
+      - social_studies_achievement
+    design_type: "complex_survey_weights"
+    notes: >
+      Useful legacy extension, but lower priority because acquisition through NCES tools
+      may be less straightforward.
+
+  - id: pisa_2022
+    name: PISA 2022
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://www.oecd.org/en/data/datasets/pisa-2022-database.html"
+    methodology_url: "https://www.oecd.org/en/about/programmes/pisa/how-to-prepare-and-analyse-the-pisa-database.html"
+    target_population: "15-year-old students in participating education systems"
+    domains: ["math", "reading", "science", "creative_thinking"]
+    candidate_traits:
+      - math_achievement
+      - reading_achievement
+      - science_achievement
+      - creative_thinking
+    design_type: "replicate_weights_plus_plausible_values"
+    notes: >
+      Start with U.S.-only results, then extend internationally if the core pipeline is stable.
+    caveats:
+      - "Use final student weights and replicate weights."
+      - "From recent cycles, use all plausible values supplied."
+
+  - id: timss_2019
+    name: TIMSS 2019
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://timssandpirls.bc.edu/timss2019/international-database/"
+    methodology_url: "https://timssandpirls.bc.edu/timss2019/methods/pdf/T19_MP_Ch14-estimating-standard-errors.pdf"
+    target_population: "Students in participating TIMSS systems"
+    domains: ["math", "science"]
+    candidate_traits:
+      - math_achievement
+      - science_achievement
+    design_type: "jrr_plus_plausible_values"
+    notes: >
+      High-value international replication after PISA or after the U.S. core is working.
+    caveats:
+      - "Implement JRR correctly."
+      - "Use achievement PV procedures for standard errors."
+
+  - id: pirls_2021
+    name: PIRLS 2021
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://pirls2021.org/data/"
+    methodology_url: "https://timssandpirls.bc.edu/pirls2021/methods/"
+    target_population: "Fourth-grade students in participating PIRLS systems"
+    domains: ["reading"]
+    candidate_traits:
+      - reading_achievement
+      - reading_informational
+      - reading_literary
+    design_type: "jrr_plus_plausible_values"
+    notes: >
+      Strong reading-specific international replication using the IEA PIRLS 2021
+      student achievement database.
+    caveats:
+      - "Implement JRR correctly."
+      - "Use reading plausible-value procedures for standard errors."
+
+  - id: timss_2023
+    name: TIMSS 2023
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://timss2023.org/data/"
+    methodology_url: "https://timssandpirls.bc.edu/timss2023/methods/"
+    target_population: "Students in participating TIMSS 2023 systems"
+    domains: ["math", "science"]
+    candidate_traits:
+      - math_achievement
+      - science_achievement
+    design_type: "jrr_plus_plausible_values"
+    notes: >
+      Newest TIMSS release. The current pipeline is wired U.S.-first but uses the same
+      IEA JRR-plus-plausible-value structure as TIMSS 2019.
+    caveats:
+      - "Implement JRR correctly."
+      - "Use achievement PV procedures for standard errors."
+
+  - id: icils_2023
+    name: ICILS 2023
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct_or_manual
+    official_url: "https://www.iea.nl/data-tools/repository/icils"
+    methodology_url: "https://www.iea.nl/studies/iea/icils/2023"
+    target_population: "Students in participating ICILS 2023 systems"
+    domains: ["computer_and_information_literacy", "computational_thinking"]
+    candidate_traits:
+      - computer_information_literacy
+      - computational_thinking
+    design_type: "jrr_plus_plausible_values"
+    notes: >
+      Digital-skills extension using the ICILS 2023 student public-use database and its
+      documented jackknife repeated replication design.
+    caveats:
+      - "Use student weights and replicate weights, not naive standard errors."
+      - "Do not collapse plausible values to respondent means."
+
+  - id: nhanes_2011_2023
+    name: NHANES selected cycles
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct
+    official_url: "https://wwwn.cdc.gov/nchs/nhanes/"
+    methodology_url: "https://wwwn.cdc.gov/nchs/nhanes/tutorials/default.aspx"
+    target_population: "U.S. civilian noninstitutionalized population"
+    domains: ["anthropometry", "grip_strength", "adult_cognition"]
+    candidate_traits:
+      - height_cm
+      - weight_kg
+      - bmi
+      - waist_cm
+      - grip_strength_kg
+      - adult_cognition_screen
+    design_type: "complex_survey_weights"
+    notes: >
+      Use only clearly comparable cycles and protocols. Good non-cognitive extension.
+    caveats:
+      - "Cycle comparability must be checked explicitly."
+      - "Use CDC weighting guidance."
+
+  - id: nnyfs_2012
+    name: NNYFS 2012
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct
+    official_url: "https://wwwn.cdc.gov/nchs/nhanes/search/nnyfsdata.aspx?Component=Examination"
+    methodology_url: "https://archive.cdc.gov/www_cdc_gov/nchs/nnyfs/manuals.htm"
+    target_population: "U.S. youth fitness survey participants"
+    domains: ["youth_fitness", "grip_strength"]
+    candidate_traits:
+      - height_cm
+      - weight_kg
+      - bmi
+      - waist_cm
+      - grip_strength_kg
+    design_type: "complex_survey_weights"
+    notes: >
+      Useful youth physical-trait extension alongside NHANES, using public XPT files
+      for anthropometry and grip strength.
+
+  - id: psid_cds_tas
+    name: PSID CDS / TAS
+    tier: 2
+    priority: robustness
+    access_mode: public_portal
+    automation: manual_extraction_likely
+    official_url: "https://psidonline.isr.umich.edu/cds/default.aspx"
+    methodology_url: "https://psidonline.isr.umich.edu/GettingStarted.aspx"
+    target_population: "Children and young adults in PSID families"
+    domains: ["achievement", "working_memory", "anthropometry"]
+    candidate_traits:
+      - woodcock_johnson
+      - working_memory
+      - height_cm
+      - weight_kg
+    design_type: "survey_weights_if_available"
+    notes: >
+      Strong developmental complement to NLSY, especially for WJ and digit-span style measures.
+    caveats:
+      - "Portal workflow may require manual acquisition."
+      - "Document family-linked sample structure."
+
+  - id: add_health_public
+    name: Add Health public-use
+    tier: 3
+    priority: optional
+    access_mode: public_terms_or_login
+    automation: manual_terms
+    official_url: "https://addhealth.cpc.unc.edu/data/public-use-data-sets/"
+    methodology_url: "https://addhealth.cpc.unc.edu/data/"
+    target_population: "Public-use subset of Add Health respondents"
+    domains: ["vocabulary", "life_course"]
+    candidate_traits:
+      - ahpvt
+    design_type: "complex_survey_weights"
+    notes: >
+      Useful vocabulary proxy and life-course extension, but public-use is a subset sample.
+    caveats:
+      - "Public-use sample is reduced to lower disclosure risk."
+      - "Do not redistribute portal files."
+
+  - id: hrs_public
+    name: HRS public
+    tier: 3
+    priority: optional
+    access_mode: public_registration
+    automation: manual_terms
+    official_url: "https://hrs.isr.umich.edu/data-products"
+    methodology_url: "https://hrs.isr.umich.edu/data-products/cognition-data"
+    target_population: "Older U.S. adults"
+    domains: ["later_life_cognition", "numeracy"]
+    candidate_traits:
+      - immediate_recall
+      - delayed_recall
+      - serial_7s
+      - total_cognition
+      - numeracy
+    design_type: "survey_weights"
+    notes: >
+      Very useful later-life contrast once the core pipeline is stable.
+    caveats:
+      - "Registration may be required."
+      - "Do not redistribute downloaded HRS files."
+
+  - id: midus_public
+    name: MIDUS
+    tier: 3
+    priority: optional
+    access_mode: public_portal
+    automation: manual_terms
+    official_url: "https://midus.wisc.edu/data-access/"
+    methodology_url: "https://midus.wisc.edu/"
+    target_population: "MIDUS participants"
+    domains: ["cognition", "personality"]
+    candidate_traits:
+      - midus_cognition
+      - big_five
+    design_type: "survey_weights_if_available"
+    notes: >
+      Use cognition first. Personality analyses should be clearly secondary because of bounded scales.
+    caveats:
+      - "Do not redistribute portal data."
+      - "Portal and ICPSR access paths may differ."

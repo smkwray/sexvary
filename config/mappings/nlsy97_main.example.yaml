@@ -1,0 +1,24 @@
+dataset_id: nlsy97_main
+table_shape: wide
+columns:
+  person_id: person_id
+  sex: sex
+  weight: r1_cross_sectional_sampling_weight
+traits:
+  asvab_subtests:
+    general_science: GS
+    arithmetic_reasoning: AR
+    word_knowledge: WK
+    paragraph_comprehension: PC
+    numerical_operations: NO
+    coding_speed: CS
+    auto_information: AUTO
+    shop_information: SHOP
+    mathematics_knowledge: MK
+    mechanical_comprehension: MC
+    electronics_information: EI
+    auto_and_shop_information: AS
+value_maps:
+  sex:
+    male: [1, "1", "M", "Male", "MALE"]
+    female: [2, "2", "F", "Female", "FEMALE"]

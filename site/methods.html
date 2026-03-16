@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methods &mdash; Sex Differences in Variability</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/main.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__brand">sexvary</a>
+    <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <ul class="nav__links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="results.html">Results</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="methods.html" class="active">Methods</a></li>
+      <li><a href="limits.html">Limits</a></li>
+      <li><a href="explanations.html">Explanations</a></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode"></button></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>Methods</h1>
+    <p>The analysis uses a consistent framework across all datasets: define analysis cells, estimate sex-specific weighted variances, compute variance ratios, and label evidence quality.</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- Core estimator -->
+  <section class="section">
+    <div class="container">
+      <h2>Variance Ratio</h2>
+      <p>The core effect-size estimator is the variance ratio:</p>
+
+      <div class="formula">
+        VR = Var<sub>male</sub> / Var<sub>female</sub>
+      </div>
+
+      <p>
+        A value <strong>above 1.0&times;</strong> means males show greater score variability
+        on that measure in that cell. A value <strong>below 1.0&times;</strong> means females
+        show greater variability. A value near <strong>1.0&times;</strong> means the
+        sex-specific variances are approximately equal.
+      </p>
+      <p>
+        For example, a VR of 1.25&times; means male variance is 25% larger than female
+        variance. A VR of 0.80&times; means male variance is 20% smaller.
+      </p>
+      <p>
+        Internally, the pipeline works on the log scale
+        (ln&thinsp;VR) because variance ratios are multiplicative&mdash;the log
+        transform makes male-greater and female-greater effects symmetric around zero,
+        which simplifies standard-error estimation and cross-cell comparison.
+        All public-facing results are reported on the natural VR scale.
+      </p>
+    </div>
+  </section>
+
+  <!-- Cell construction -->
+  <section class="section">
+    <div class="container">
+      <h2>Cell Construction</h2>
+      <p>
+        Each analysis cell is defined by the intersection of:
+      </p>
+      <ul style="margin:1rem 0 1rem 1.5rem">
+        <li><strong>Dataset</strong> &mdash; one of the 14 live data sources</li>
+        <li><strong>Cycle or wave</strong> &mdash; the assessment year, survey cycle, or longitudinal wave</li>
+        <li><strong>Country</strong> &mdash; currently U.S. for all datasets</li>
+        <li><strong>Age or grade band</strong> &mdash; e.g., kindergarten, grade 4, 30&ndash;34, 60&ndash;65</li>
+        <li><strong>Trait</strong> &mdash; the specific measured variable (e.g., math achievement, numeracy, grip strength)</li>
+      </ul>
+      <p>
+        Within each cell, the pipeline computes weighted means and variances separately for
+        males and females, applies the appropriate inference method, and records the variance
+        ratio along with its standard error and confidence interval where available.
+      </p>
+    </div>
+  </section>
+
+  <!-- Survey weights -->
+  <section class="section">
+    <div class="container">
+      <h2>Survey Weight Handling</h2>
+      <p>
+        Most of these datasets use complex survey designs with stratification, clustering, and
+        unequal selection probabilities. Ignoring survey weights can bias variance estimates.
+        The pipeline uses weighted estimation throughout, with dataset-specific handling:
+      </p>
+
+      <h3>Plausible Values</h3>
+      <p>
+        Several large-scale assessments do not report a single score per student. Instead,
+        they provide multiple <em>plausible values</em>&mdash;draws from the posterior
+        distribution of each student&rsquo;s proficiency. The pipeline averages variance
+        estimates across all plausible-value draws within each cell, properly combining
+        measurement uncertainty with sampling uncertainty.
+      </p>
+      <p>Datasets using plausible values: PIAAC, PISA, TIMSS, PIRLS, ICILS.</p>
+
+      <h3>Replicate Weights</h3>
+      <p>
+        Instead of relying on analytic variance formulas, many surveys provide sets of
+        replicate weights that reflect the survey design. The pipeline uses the appropriate
+        replication method for each dataset to estimate standard errors for the
+        variance ratio.
+      </p>
+    </div>
+  </section>
+
+  <!-- Inference modes -->
+  <section class="section">
+    <div class="container">
+      <h2>Inference Modes</h2>
+      <p>The pipeline supports five inference approaches, matched to what each dataset provides:</p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption>Inference methods by dataset</caption>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Datasets</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>PV + replicate weights</strong></td>
+              <td>Plausible-value averaging combined with replicate-weight standard errors. The strongest inference mode, handling both measurement and sampling uncertainty.</td>
+              <td>PIAAC, PISA, TIMSS, PIRLS, ICILS</td>
+            </tr>
+            <tr>
+              <td><strong>BRR</strong></td>
+              <td>Balanced Repeated Replication. Uses Fay-adjusted replicate weights to estimate SEs without plausible values.</td>
+              <td>HSLS:09</td>
+            </tr>
+            <tr>
+              <td><strong>JRR</strong></td>
+              <td>Jackknife Repeated Replication. Uses jackknife zones and replicate indicators to estimate SEs.</td>
+              <td>TIMSS, PIRLS, ICILS (combined with PV)</td>
+            </tr>
+            <tr>
+              <td><strong>Stratified PSU bootstrap</strong></td>
+              <td>Design-aware bootstrap resampling using primary sampling unit and stratum metadata.</td>
+              <td>ECLS-K:2011, NHANES, NNYFS</td>
+            </tr>
+            <tr>
+              <td><strong>Approximate household-cluster bootstrap</strong></td>
+              <td>Bootstrap using tracker strata and household clusters as a proxy for the full survey design. Explicitly treated as method-limited.</td>
+              <td>HRS</td>
+            </tr>
+            <tr>
+              <td><strong>Simple effective-sample-size approximation</strong></td>
+              <td>Analytic SE formula using design-adjusted effective sample sizes. The weakest inference mode. Cells using this method are marked method-limited and excluded from headline claims.</td>
+              <td>NLSY79, NLSY97, NLSY79 Child/YA, PSID CDS/TAS</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Evidence status system -->
+  <section class="section">
+    <div class="container">
+      <h2>Evidence Status System</h2>
+      <p>
+        Every output cell carries an evidence-status label. These labels determine which cells
+        are eligible for headline claims and which are retained only for transparency or
+        supporting analysis.
+      </p>
+
+      <ul class="tier-list">
+        <li>
+          <span class="badge badge--headline">headline-eligible</span>
+          <span>Inferential cell with confirmatory-priority trait, proper survey-design inference, and no provisional flags. Only these cells are used in the headline claim.</span>
+        </li>
+        <li>
+          <span class="badge badge--supporting">supporting</span>
+          <span>Inferential cell from a secondary or exploratory-priority trait. Broadens domain coverage but is not part of the headline evidence.</span>
+        </li>
+        <li>
+          <span class="badge badge--provisional">provisional</span>
+          <span>Cell that relies on fallback weights, alternate public weight sources, or other provisional inference paths. Retained for sensitivity analysis but excluded from headline claims.</span>
+        </li>
+        <li>
+          <span class="badge badge--method">method-limited</span>
+          <span>Cell using simple-design SE approximation instead of replicate weights. Point estimates may be reasonable, but the uncertainty quantification is weaker.</span>
+        </li>
+        <li>
+          <span class="badge badge--qa">QA-only</span>
+          <span>Cell that falls below sample-size thresholds, has bounded-scale issues, or is otherwise unsuitable for inferential use. Retained for quality-assurance diagnostics only.</span>
+        </li>
+      </ul>
+
+      <p>
+        This system ensures that public-facing summaries do not collapse strong and weak
+        evidence into a single pooled claim. The headline finding (94% male-greater across
+        50 cells) uses only headline-eligible cells.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    This project is descriptive, not causal. It does not establish biological or essentialist conclusions.
+  </div>
+</footer>
+
+</body>
+</html>

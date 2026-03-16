@@ -1,0 +1,21 @@
+dataset_id: nlsy79_child_ya
+table_shape: wide
+columns:
+  person_id: person_id
+  sex: sex
+  age: csage
+  weight: child_sampling_weight_1998
+weight_fallback_columns:
+  - child_sampling_weight_1998
+  - child_sampling_weight_2016_under14
+  - mother_sampling_weight_79
+traits:
+  working_memory: DIGITSPAN
+  ppvt: PPVT
+  piat_math: PIAT_MATH
+  piat_reading_recognition: PIAT_RR
+  piat_reading_comprehension: PIAT_RC
+value_maps:
+  sex:
+    male: [1, "1", "M", "Male", "MALE"]
+    female: [2, "2", "F", "Female", "FEMALE"]
