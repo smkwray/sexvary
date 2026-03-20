@@ -15,33 +15,46 @@ from sexvary.config import build_registry
 from sexvary.utils import canonical_external_data_dir, ensure_dir, project_root, shared_data_root, utc_timestamp
 
 
-def write_source_note(base_dir: Path, spec) -> Path:
+def write_source_note(base_dir: Path, specs) -> Path:
+    specs = list(specs)
+    if not specs:
+        raise ValueError("write_source_note requires at least one dataset spec.")
     path = base_dir / "SOURCE.md"
+    dataset_ids = ", ".join(f"`{spec.id}`" for spec in specs)
     lines = [
-        f"# {spec.name}",
+        "# External data source notes",
         "",
-        f"- dataset_id: `{spec.id}`",
-        f"- access_mode: `{spec.access_mode}`",
-        f"- automation: `{spec.automation}`",
-        f"- official_url: {spec.official_url}",
+        f"- dataset_ids: {dataset_ids}",
+        f"- generated_utc: {utc_timestamp()}",
+        "",
     ]
-    if spec.methodology_url:
-        lines.append(f"- methodology_url: {spec.methodology_url}")
-    if spec.design_type:
-        lines.append(f"- design_type: `{spec.design_type}`")
-    lines.extend(
-        [
-            f"- generated_utc: {utc_timestamp()}",
-            "",
-            "## Notes",
-            spec.notes or "_No additional notes provided._",
-            "",
-        ]
-    )
-    if spec.caveats:
-        lines.append("## Caveats")
-        lines.extend([f"- {item}" for item in spec.caveats])
-        lines.append("")
+    for spec in specs:
+        lines.extend(
+            [
+                f"## {spec.name}",
+                "",
+                f"- dataset_id: `{spec.id}`",
+                f"- access_mode: `{spec.access_mode}`",
+                f"- automation: `{spec.automation}`",
+                f"- official_url: {spec.official_url}",
+            ]
+        )
+        if spec.methodology_url:
+            lines.append(f"- methodology_url: {spec.methodology_url}")
+        if spec.design_type:
+            lines.append(f"- design_type: `{spec.design_type}`")
+        lines.extend(
+            [
+                "",
+                "### Notes",
+                spec.notes or "_No additional notes provided._",
+                "",
+            ]
+        )
+        if spec.caveats:
+            lines.append("### Caveats")
+            lines.extend([f"- {item}" for item in spec.caveats])
+            lines.append("")
     lines.extend(
         [
             "## Manual acquisition status",
@@ -88,10 +101,15 @@ def main() -> None:
     registry = build_registry(root)
     shared_root = shared_data_root(root)
 
+    grouped_specs: dict[Path, list] = {}
     for spec in registry.external_datasets():
         canonical = canonical_external_data_dir(spec.id, root)
-        base_dir = ensure_dir(canonical if canonical is not None else (root / "data" / "raw" / "external" / spec.id))
-        write_source_note(base_dir, spec)
+        base_dir = canonical if canonical is not None else (root / "data" / "raw" / "external" / spec.id)
+        grouped_specs.setdefault(base_dir, []).append(spec)
+
+    for base_dir, specs in grouped_specs.items():
+        base_dir = ensure_dir(base_dir)
+        write_source_note(base_dir, specs)
         inventory = base_dir / "FILE_INVENTORY.csv"
         if not inventory.exists():
             inventory.write_text("filename,notes\n", encoding="utf-8")

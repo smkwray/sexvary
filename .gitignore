@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.local
+.claude/
 .venv/
 venv/
 env/
@@ -58,6 +59,8 @@ home-*.png
 results-*.png
 datasets-*.png
 tooltip-*.png
+cell-explorer*.png
+piaac-means.png
 
 # OS
 .DS_Store
@@ -71,7 +74,7 @@ Thumbs.db
 output/
 
 # Temp test fixtures
-$$tmpdir/
+$tmpdir/
 
 # Build
 *.egg-info/

@@ -1,0 +1,86 @@
+cpp_core:
+  files:
+    clean: cpp_clean_v1.csv
+    cognitive: cpp_cognitive_scores.csv
+    g_factors: cpp_g_factors.csv
+    weights: cpp_weights.csv
+
+  id_columns:
+    case_id: [case_id]
+    mother_id: [mother_id]
+    sex: [sex]
+    site: [site, center, institution, institution_code]
+
+  weight_columns:
+    - weight_combined
+    - wt_recommended
+    - weight_attrition
+
+  waves:
+    age_4:
+      age: 4.0
+      grade_or_age_band: "4"
+      presence_any:
+        - g_age4_default
+        - sb_iq
+        - stanford_binet_iq
+      traits:
+        general_intelligence_g:
+          - g_age4_default
+          - sb_iq
+          - stanford_binet_iq
+
+    age_7:
+      age: 7.0
+      grade_or_age_band: "7"
+      presence_any:
+        - g_age7_default
+        - wisc_fsiq
+        - wrat_reading
+      traits:
+        general_intelligence_g:
+          - g_age7_default
+          - wisc_fsiq
+        reading_achievement:
+          - wrat_reading
+          - wrat_reading_z
+        working_memory:
+          - wisc_digit_span
+          - digit_span
+
+cpp_growth:
+  files:
+    growth: cpp_growth_trajectories.csv
+    birthweight: cpp_birthweight_zscores.csv
+    weights: cpp_weights.csv
+    clean: cpp_clean_v1.csv
+
+  id_columns:
+    case_id: [case_id]
+    mother_id: [mother_id]
+    sex: [sex]
+    site: [site, center, institution, institution_code]
+
+  weight_columns:
+    - weight_combined
+    - wt_recommended
+    - weight_attrition
+
+  measure_columns:
+    wave: [visit_label, visit, wave, age_band]
+    age: [age_months, age_years]
+    height_cm:
+      - height_cm
+      - ht_cm
+      - height
+    weight_kg:
+      - weight_kg
+      - wt_kg
+      - weight
+
+  birthweight:
+    wave: birth
+    age: 0.0
+    value_columns:
+      - birthweight_z
+      - bw_z

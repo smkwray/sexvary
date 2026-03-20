@@ -1,4 +1,5 @@
-PYTHON ?= .venv/bin/python
+VENV ?= $(HOME)/venvs/sexvary
+PYTHON ?= $(VENV)/bin/python
 REMOTE_HOST ?=
 
 .PHONY: install validate test demo checklist local-nlsy piaac pisa timss pirls icils nhanes nnyfs psid hrs nces-school compare-results paper-report backend backend-health backend-restore backend-sync-health update-site-assets

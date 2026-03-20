@@ -6,8 +6,8 @@ Developer setup and pipeline reference for the sexvary analysis backend.
 
 ```bash
 # Create environment
-uv venv .venv --python 3.11
-uv pip install --python .venv/bin/python -e .[dev]
+uv venv "$HOME/venvs/sexvary" --python 3.11
+uv pip install --python "$HOME/venvs/sexvary/bin/python" -e .[dev]
 
 # Run tests
 make test
@@ -27,9 +27,9 @@ cp config/local_paths.example.yaml config/local_paths.yaml
 Then register each dataset:
 
 ```bash
-.venv/bin/python scripts/register_nlsy.py --dataset-id nlsy79_main --path /path/to/nlsy79_cfa.csv
-.venv/bin/python scripts/register_nlsy.py --dataset-id nlsy97_main --path /path/to/nlsy97_cfa.csv
-.venv/bin/python scripts/register_nlsy.py --dataset-id nlsy79_child_ya --path /path/to/cnlsy_cfa.csv
+"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy79_main --path /path/to/nlsy79_cfa.csv
+"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy97_main --path /path/to/nlsy97_cfa.csv
+"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy79_child_ya --path /path/to/cnlsy_cfa.csv
 ```
 
 Relative paths in `config/local_paths.yaml` are resolved from the project root.

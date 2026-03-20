@@ -18,6 +18,8 @@ CANONICAL_EXTERNAL_DATASET_PATHS = {
     "icils_2023": ("iea", "icils", "2023"),
     "nhanes_2011_2023": ("cdc", "nhanes", "selected_cycles_2011_2023"),
     "nnyfs_2012": ("cdc", "nnyfs", "2012"),
+    "cpp_core": ("nih", "cpp", "release_v3_2"),
+    "cpp_growth": ("nih", "cpp", "release_v3_2"),
     "ecls_k_2011": ("nces", "ecls_k", "2011"),
     "hsls_2009": ("nces", "hsls", "2009"),
     "els_2002": ("nces", "els", "2002"),

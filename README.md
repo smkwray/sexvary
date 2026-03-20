@@ -4,7 +4,9 @@
 
 ---
 
-This project estimates where sex differences in score variability appear across **15 live datasets**. The public README is generated from the same normalized bundle as the site pages, so counts and tables stay aligned.
+This project estimates where sex differences in score variability appear across **17 live datasets**. The public README is generated from the same normalized bundle as the site pages, so counts and tables stay aligned.
+
+The current public bundle includes NIH Collaborative Perinatal Project outputs for core cognition and growth trajectories. These CPP rows are visible in the dataset inventory and cell explorer, and currently remain method-limited rather than headline-eligible.
 
 ## Headline findings
 
@@ -38,6 +40,8 @@ This project estimates where sex differences in score variability appear across 
 
 | Dataset | Claim status | Cells | With CI | Headline rows | Median VR | % Male-greater |
 | --- | --- | --- | --- | --- | --- | --- |
+| CPP core cognition | Method-limited | 4 | 4 | 0 | 1.00x | 50% |
+| CPP growth trajectories | Method-limited | 15 | 15 | 0 | 1.01x | 53% |
 | ECLS-K:2011 | Headline claim | 32 | 26 | 23 | 1.18x | 85% |
 | HRS public | Provisional | 182 | 91 | 0 | 0.97x | 40% |
 | HSLS:09 | Headline claim | 2 | 2 | 2 | 1.14x | 100% |

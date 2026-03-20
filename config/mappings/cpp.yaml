@@ -1,0 +1,84 @@
+cpp_core:
+  files:
+    clean: cpp_clean_v1.csv
+    cognitive: cpp_cognitive_scores.csv
+    g_factors: cpp_g_factors.csv
+    weights: cpp_weights.csv
+
+  id_columns:
+    case_id: [case_id]
+    mother_id: [mother_id]
+    sex: [sex]
+    site: [institution]
+
+  weight_columns:
+    - combined_age4_national
+    - combined_age7_national
+    - ipw_anyfollowup_full
+    - ipw_anyfollowup_simple
+
+  waves:
+    age_4:
+      age: 4.0
+      grade_or_age_band: "4"
+      weight_columns:
+        - combined_age4_national
+        - combined_age4_urban
+        - ipw_age4_full
+        - ipw_age4_simple
+      presence_any:
+        - g_irt_sb_adaptive
+        - sb_iq
+      traits:
+        general_intelligence_g:
+          - g_irt_sb_adaptive
+          - sb_iq
+    age_7:
+      age: 7.0
+      grade_or_age_band: "7"
+      weight_columns:
+        - combined_age7_national
+        - combined_age7_urban
+        - ipw_age7_full
+        - ipw_age7_simple
+      presence_any:
+        - g_pca_7
+        - wrat_read
+        - wisc_digit
+      traits:
+        general_intelligence_g:
+          - g_pca_7
+        reading_achievement:
+          - wrat_read
+        working_memory:
+          - wisc_digit
+
+cpp_growth:
+  files:
+    growth: cpp_growth_trajectories.csv
+    birthweight: cpp_birthweight_zscores.csv
+    weights: cpp_weights.csv
+    clean: cpp_clean_v1.csv
+
+  id_columns:
+    case_id: [case_id]
+    mother_id: [mother_id]
+    sex: [sex]
+    site: [institution]
+
+  weight_columns:
+    - ipw_anyfollowup_full
+    - ipw_anyfollowup_simple
+    - popwt_national
+    - popwt_national_noregion
+
+  measure_columns:
+    age: [age_months]
+    height_cm: [height_cm]
+    weight_kg: [weight_kg]
+
+  birthweight:
+    wave: birth
+    age: 0.0
+    value_columns:
+      - bw_zscore

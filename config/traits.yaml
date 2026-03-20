@@ -257,3 +257,11 @@ traits:
     scale_type: continuous
     priority: secondary
     recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+
+  - id: birthweight_z
+    label: "Birth weight z-score"
+    family: physical
+    scale_type: continuous
+    priority: exploratory
+    recommended_metrics: [log_variance_ratio, variance_ratio, tail_rate_ratios]
+    notes: "CPP-derived birth weight standardized by sex and gestational age."

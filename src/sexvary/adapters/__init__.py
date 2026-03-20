@@ -1,4 +1,5 @@
 from .base import BaseAdapter, NormalizedTraitFrame
+from .cpp import CPPAdapter
 from .hrs import HRSAdapter
 from .icils import ICILSAdapter
 from .nces_school import NCESSchoolAdapter
@@ -11,4 +12,4 @@ from .pirls import PIRLSAdapter
 from .psid import PSIDAdapter
 from .timss import TIMSSAdapter
 
-__all__ = ["BaseAdapter", "NormalizedTraitFrame", "LocalWideTableAdapter", "NCESSchoolAdapter", "NHANESAdapter", "NNYFSAdapter", "PIAACAdapter", "PISAAdapter", "PSIDAdapter", "TIMSSAdapter", "PIRLSAdapter", "ICILSAdapter", "HRSAdapter"]
+__all__ = ["BaseAdapter", "NormalizedTraitFrame", "LocalWideTableAdapter", "NCESSchoolAdapter", "NHANESAdapter", "NNYFSAdapter", "CPPAdapter", "PIAACAdapter", "PISAAdapter", "PSIDAdapter", "TIMSSAdapter", "PIRLSAdapter", "ICILSAdapter", "HRSAdapter"]

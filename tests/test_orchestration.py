@@ -28,6 +28,15 @@ def test_discover_pipeline_invocations_finds_available_datasets(tmp_path: Path):
     _touch(tmp_path / "data" / "raw" / "external" / "pisa_2022" / "CY08MSP_STU_QQQ.SAV")
     _touch(tmp_path / "data" / "raw" / "external" / "nhanes_2011_2023" / "DEMO_G.xpt")
     _touch(tmp_path / "data" / "raw" / "external" / "nnyfs_2012" / "Y_DEMO.xpt")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_core" / "cpp_clean_v1.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_core" / "cpp_cognitive_scores.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_core" / "cpp_g_factors.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_core" / "cpp_weights.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_growth" / "cpp_growth_trajectories.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_growth" / "cpp_birthweight_zscores.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_growth" / "cpp_clean_v1.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "cpp_growth" / "cpp_weights.csv")
+    _touch(tmp_path / "data" / "raw" / "external" / "psid_cds_tas" / "psid_stub.csv")
     _touch(tmp_path / "data" / "raw" / "external" / "timss_2019" / "asgusam7.sav")
     _touch(tmp_path / "data" / "raw" / "external" / "timss_2023" / "asgusam8.sav")
     _touch(tmp_path / "data" / "raw" / "external" / "pirls_2021" / "ASGAUSR5.sav")
@@ -44,6 +53,9 @@ def test_discover_pipeline_invocations_finds_available_datasets(tmp_path: Path):
         "pisa_2022",
         "nhanes_2011_2023",
         "nnyfs_2012",
+        "cpp_core",
+        "cpp_growth",
+        "psid_cds_tas",
         "hrs_public",
         "timss_2019",
         "timss_2023",
@@ -96,6 +108,8 @@ def test_build_selection_records_marks_missing_inputs(tmp_path: Path):
     assert statuses["piaac_cycle2"] == "selected"
     assert statuses["pisa_2022"] == "missing_input"
     assert statuses["nnyfs_2012"] == "missing_input"
+    assert statuses["cpp_core"] == "missing_input"
+    assert statuses["cpp_growth"] == "missing_input"
     assert statuses["hrs_public"] == "missing_input"
     assert statuses["timss_2019"] == "missing_input"
 
@@ -112,6 +126,26 @@ def test_discover_pipeline_availability_reads_shared_data_root_layout(tmp_path: 
 
     assert statuses["nnyfs_2012"] == "runnable"
     assert "sources/cdc/nnyfs/2012" in (reasons["nnyfs_2012"] or "")
+
+
+def test_discover_pipeline_availability_cpp_requires_complete_file_sets(tmp_path: Path):
+    shared_root = tmp_path.parent / "data"
+    cpp_dir = shared_root / "sources" / "nih" / "cpp" / "release_v3_2"
+    _touch(cpp_dir / "cpp_clean_v1.csv")
+    _touch(cpp_dir / "cpp_cognitive_scores.csv")
+    _touch(cpp_dir / "cpp_g_factors.csv")
+    _touch(cpp_dir / "cpp_weights.csv")
+    (tmp_path / "config").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "config" / "local_paths.yaml").write_text("local_datasets: {}\n", encoding="utf-8")
+
+    availability = discover_pipeline_availability(tmp_path, python_executable="/usr/bin/python3")
+    statuses = {item.pipeline_id: item.status for item in availability}
+    reasons = {item.pipeline_id: item.reason for item in availability}
+
+    assert statuses["cpp_core"] == "runnable"
+    assert statuses["cpp_growth"] == "missing_input"
+    assert "sources/nih/cpp/release_v3_2" in (reasons["cpp_core"] or "")
+    assert "cpp_growth_trajectories.csv" in (reasons["cpp_growth"] or "")
 
 
 def test_write_run_manifest_creates_latest_files(tmp_path: Path):

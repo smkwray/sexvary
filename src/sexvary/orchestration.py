@@ -107,6 +107,17 @@ def _external_available(root: Path, dataset_id: str, *, patterns: Iterable[str] 
     return False, "Searched: " + ", ".join(str(path) for path in searched)
 
 
+def _required_files_available(root: Path, dataset_id: str, *, required_files: tuple[str, ...]) -> tuple[bool, str | None]:
+    searched = external_data_dirs(dataset_id, root)
+    missing_by_dir: list[str] = []
+    for data_dir in searched:
+        missing = [name for name in required_files if not (data_dir / name).is_file()]
+        if not missing:
+            return True, f"{data_dir}: {', '.join(required_files)}"
+        missing_by_dir.append(f"{data_dir} missing {', '.join(missing)}")
+    return False, "Searched: " + "; ".join(missing_by_dir)
+
+
 def _hrs_available(root: Path) -> tuple[bool, str | None]:
     searched = external_data_dirs("hrs_public", root)
     for data_dir in searched:
@@ -155,7 +166,6 @@ def discover_pipeline_availability(root: Path, *, python_executable: str | None 
         ("pisa_2022", "run_pisa_pipeline.py", "PISA 2022"),
         ("nhanes_2011_2023", "run_nhanes_pipeline.py", "NHANES selected cycles"),
         ("nnyfs_2012", "run_nnyfs_pipeline.py", "NNYFS 2012"),
-        ("psid_cds_tas", "run_psid_pipeline.py", "PSID CDS / TAS"),
     ):
         available, notes = _external_available(root, dataset_id)
         if available:
@@ -185,6 +195,68 @@ def discover_pipeline_availability(root: Path, *, python_executable: str | None 
                     reason=notes,
                 )
             )
+
+    for dataset_id, label, required_files in (
+        ("cpp_core", "CPP core cognition", ("cpp_clean_v1.csv", "cpp_cognitive_scores.csv", "cpp_g_factors.csv", "cpp_weights.csv")),
+        ("cpp_growth", "CPP growth trajectories", ("cpp_growth_trajectories.csv", "cpp_birthweight_zscores.csv", "cpp_clean_v1.csv", "cpp_weights.csv")),
+    ):
+        available, notes = _required_files_available(root, dataset_id, required_files=required_files)
+        if available:
+            invocation = PipelineInvocation(
+                pipeline_id=dataset_id,
+                label=label,
+                command=[python, "scripts/run_cpp_pipeline.py", "--dataset-id", dataset_id],
+                output_dir=f"results/{dataset_id}",
+                notes=notes,
+            )
+            availability.append(
+                PipelineAvailability(
+                    pipeline_id=dataset_id,
+                    label=label,
+                    status="runnable",
+                    reason=notes,
+                    invocation=invocation,
+                    output_dir=invocation.output_dir,
+                )
+            )
+        else:
+            availability.append(
+                PipelineAvailability(
+                    pipeline_id=dataset_id,
+                    label=label,
+                    status="missing_input",
+                    reason=notes,
+                )
+            )
+
+    available, notes = _external_available(root, "psid_cds_tas")
+    if available:
+        invocation = PipelineInvocation(
+            pipeline_id="psid_cds_tas",
+            label="PSID CDS / TAS",
+            command=[python, "scripts/run_psid_pipeline.py"],
+            output_dir="results/psid_cds_tas",
+            notes=notes,
+        )
+        availability.append(
+            PipelineAvailability(
+                pipeline_id="psid_cds_tas",
+                label="PSID CDS / TAS",
+                status="runnable",
+                reason=notes,
+                invocation=invocation,
+                output_dir=invocation.output_dir,
+            )
+        )
+    else:
+        availability.append(
+            PipelineAvailability(
+                pipeline_id="psid_cds_tas",
+                label="PSID CDS / TAS",
+                status="missing_input",
+                reason=notes,
+            )
+        )
 
     hrs_available, hrs_notes = _hrs_available(root)
     if hrs_available:

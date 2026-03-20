@@ -22,6 +22,8 @@ DEFAULT_COMPARISON_SOURCES = {
     "icils_2023": Path("results/icils_2023/icils_2023_trait_estimates.csv"),
     "nhanes_2011_2023": Path("results/nhanes_2011_2023/nhanes_2011_2023_trait_estimates.csv"),
     "nnyfs_2012": Path("results/nnyfs_2012/nnyfs_2012_trait_estimates.csv"),
+    "cpp_core": Path("results/cpp_core/cpp_core_trait_estimates.csv"),
+    "cpp_growth": Path("results/cpp_growth/cpp_growth_trait_estimates.csv"),
     "psid_cds_tas": Path("results/psid_cds_tas/psid_cds_tas_trait_estimates.csv"),
     "hrs_public": Path("results/hrs_public/hrs_public_trait_estimates.csv"),
     "ecls_k_2011": Path("results/ecls_k_2011/ecls_k_2011_trait_estimates.csv"),

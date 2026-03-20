@@ -294,6 +294,52 @@ datasets:
       Useful youth physical-trait extension alongside NHANES, using public XPT files
       for anthropometry and grip strength.
 
+  - id: cpp_core
+    name: CPP core cognition
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct
+    official_url: "https://ljlasker.github.io/CollaborativePerinatalProject/index.html"
+    methodology_url: "https://ljlasker.github.io/CollaborativePerinatalProject/getting-started.html"
+    target_population: "Children from U.S. pregnancies enrolled 1959-1966 and followed through age 7-8"
+    domains: ["development", "cognition", "achievement"]
+    candidate_traits:
+      - general_intelligence_g
+      - reading_achievement
+      - working_memory
+    design_type: "survey_weights_if_available"
+    notes: >
+      First pass merges the cleaned core file, derived cognitive scores, g-factor outputs,
+      and weights. Keep age-4 and age-7 cognition separate as distinct waves.
+    caveats:
+      - "Exclude sex=3 fetal losses from live-birth analyses."
+      - "Read case_id and mother_id as strings."
+      - "Prefer weight_combined; otherwise fall back to wt_recommended."
+      - "No public replicate-weight path is assumed in v1."
+
+  - id: cpp_growth
+    name: CPP growth trajectories
+    tier: 2
+    priority: robustness
+    access_mode: public_use_download
+    automation: direct
+    official_url: "https://ljlasker.github.io/CollaborativePerinatalProject/index.html"
+    methodology_url: "https://ljlasker.github.io/CollaborativePerinatalProject/getting-started.html"
+    target_population: "CPP children with repeated physical measurements in the public release"
+    domains: ["growth", "anthropometry"]
+    candidate_traits:
+      - height_cm
+      - weight_kg
+      - birthweight_z
+    design_type: "survey_weights_if_available"
+    notes: >
+      Use growth trajectories for repeated anthropometry and keep birthweight_z as a
+      distinct birth-wave extension.
+    caveats:
+      - "Inspect the growth file before locking visit labels or age bands."
+      - "Keep birthweight_z distinct from later growth measures."
+
   - id: psid_cds_tas
     name: PSID CDS / TAS
     tier: 2

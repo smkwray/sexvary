@@ -494,10 +494,11 @@ def _nav(active: str) -> str:
         ("limits.html", "Limits"),
         ("explanations.html", "Explanations"),
     ]
-    links = "\n".join(
-        f'      <li><a href="{href}"{" class=\"active\"" if href == active else ""}>{label}</a></li>'
-        for href, label in pages
-    )
+    link_rows: list[str] = []
+    for href, label in pages:
+        active_class = ' class="active"' if href == active else ""
+        link_rows.append(f'      <li><a href="{href}"{active_class}>{label}</a></li>')
+    links = "\n".join(link_rows)
     return f"""<nav class="nav">
   <div class="nav__inner">
     <a href="index.html" class="nav__brand">sexvary</a>
@@ -1220,6 +1221,8 @@ def render_readme(bundle: dict[str, object], output_path: Path) -> Path:
         "---",
         "",
         f"This project estimates where sex differences in score variability appear across **{_format_int(summary['live_dataset_count'])} live datasets**. The public README is generated from the same normalized bundle as the site pages, so counts and tables stay aligned.",
+        "",
+        "The current public bundle includes NIH Collaborative Perinatal Project outputs for core cognition and growth trajectories. These CPP rows are visible in the dataset inventory and cell explorer, and currently remain method-limited rather than headline-eligible.",
         "",
         "## Headline findings",
         "",
