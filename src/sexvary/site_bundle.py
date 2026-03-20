@@ -29,6 +29,29 @@ from .reporting import markdown_table
 
 PUBLIC_SITE_PAGES = ("index.html", "results.html", "datasets.html")
 
+CLAIM_STATUS_GLOSSARY: tuple[tuple[str, str], ...] = (
+    (
+        "Headline claim",
+        "Core confirmatory rows with the strongest survey-design handling and no fallback flags. Only these rows feed the main headline claim.",
+    ),
+    (
+        "Supporting evidence",
+        "Inferential rows kept for added age or domain coverage, but still kept separate from the main headline claim.",
+    ),
+    (
+        "Provisional",
+        "Rows that depend on fallback weights or other temporary inference paths. They stay visible, but they do not count as headline evidence.",
+    ),
+    (
+        "Method-limited",
+        "Rows with usable point estimates but weaker uncertainty estimates, usually because only simple effective-sample-size approximations were available.",
+    ),
+    (
+        "QA only",
+        "Rows retained for transparency and diagnostics only, not for inferential claims.",
+    ),
+)
+
 
 def _clean_value(value: object) -> object:
     try:
@@ -144,6 +167,32 @@ def _direction_text(direction: object) -> str:
         "unavailable": "Unavailable",
     }
     return mapping.get(str(direction), str(direction))
+
+
+def _claim_status_details_html(*, title: str = "What these claim-status labels mean") -> str:
+    items = "\n".join(
+        f"          <li><strong>{html.escape(label)}</strong>: {html.escape(description)}</li>"
+        for label, description in CLAIM_STATUS_GLOSSARY
+    )
+    return f"""<details class="callout">
+  <summary class="callout__title" style="cursor:pointer">{html.escape(title)}</summary>
+  <div style="margin-top:0.75rem">
+    <ul style="margin:0 0 0 1.2rem;display:grid;gap:0.6rem">
+{items}
+    </ul>
+  </div>
+</details>"""
+
+
+def _claim_status_details_markdown() -> list[str]:
+    lines = [
+        "<details>",
+        '<summary><strong>What "Headline claim", "Supporting evidence", "Provisional", and "Method-limited" mean</strong></summary>',
+        "",
+    ]
+    lines.extend(f"- **{label}**: {description}" for label, description in CLAIM_STATUS_GLOSSARY)
+    lines.extend(["", "</details>"])
+    return lines
 
 
 def _cell_label(row: dict[str, object]) -> str:
@@ -847,6 +896,7 @@ def _results_page(bundle: dict[str, object]) -> str:
       <p>
         There are {_format_int(metrics["headline_confirmatory_cell_count"])} headline-eligible confirmatory cells and {_format_int(metrics["supporting_inferential_cell_count"])} supporting inferential cells. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
       </p>
+      {_claim_status_details_html()}
       <div id="chart-forest" style="overflow-x:auto"></div>
       {_cell_table(tables["headline_confirmatory_top"], caption="Largest headline confirmatory deviations from equal variance")}
     </div>
@@ -1090,6 +1140,7 @@ def _datasets_page(bundle: dict[str, object]) -> str:
   <section class="section">
     <div class="container container--wide">
       <h2>Dataset Inventory</h2>
+      {_claim_status_details_html(title="Claim-status glossary for the dataset inventory")}
       {_inventory_table(tables["dataset_inventory"])}
     </div>
   </section>
@@ -1223,6 +1274,10 @@ def render_readme(bundle: dict[str, object], output_path: Path) -> Path:
         f"This project estimates where sex differences in score variability appear across **{_format_int(summary['live_dataset_count'])} live datasets**. The public README is generated from the same normalized bundle as the site pages, so counts and tables stay aligned.",
         "",
         "The current public bundle includes NIH Collaborative Perinatal Project outputs for core cognition and growth trajectories. These CPP rows are visible in the dataset inventory and cell explorer, and currently remain method-limited rather than headline-eligible.",
+        "",
+        "## Claim-status glossary",
+        "",
+        *_claim_status_details_markdown(),
         "",
         "## Headline findings",
         "",

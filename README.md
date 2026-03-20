@@ -8,6 +8,19 @@ This project estimates where sex differences in score variability appear across 
 
 The current public bundle includes NIH Collaborative Perinatal Project outputs for core cognition and growth trajectories. These CPP rows are visible in the dataset inventory and cell explorer, and currently remain method-limited rather than headline-eligible.
 
+## Claim-status glossary
+
+<details>
+<summary><strong>What "Headline claim", "Supporting evidence", "Provisional", and "Method-limited" mean</strong></summary>
+
+- **Headline claim**: Core confirmatory rows with the strongest survey-design handling and no fallback flags. Only these rows feed the main headline claim.
+- **Supporting evidence**: Inferential rows kept for added age or domain coverage, but still kept separate from the main headline claim.
+- **Provisional**: Rows that depend on fallback weights or other temporary inference paths. They stay visible, but they do not count as headline evidence.
+- **Method-limited**: Rows with usable point estimates but weaker uncertainty estimates, usually because only simple effective-sample-size approximations were available.
+- **QA only**: Rows retained for transparency and diagnostics only, not for inferential claims.
+
+</details>
+
 ## Headline findings
 
 | Metric | Value |

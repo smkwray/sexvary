@@ -34,6 +34,23 @@
 
 <main>
 
+  <section class="section">
+    <div class="container">
+      <details class="callout">
+        <summary class="callout__title" style="cursor:pointer">What the public claim-status labels mean</summary>
+        <div style="margin-top:0.75rem">
+          <ul style="margin:0 0 0 1.2rem;display:grid;gap:0.6rem">
+            <li><strong>Headline claim</strong>: core confirmatory rows with the strongest survey-design handling and no fallback flags. Only these rows feed the main headline claim.</li>
+            <li><strong>Supporting evidence</strong>: inferential rows kept for added age or domain coverage, but still kept separate from the main headline claim.</li>
+            <li><strong>Provisional</strong>: rows that depend on fallback weights or other temporary inference paths. They stay visible, but they do not count as headline evidence.</li>
+            <li><strong>Method-limited</strong>: rows with usable point estimates but weaker uncertainty estimates, usually because only simple effective-sample-size approximations were available.</li>
+            <li><strong>QA only</strong>: rows retained for transparency and diagnostics only, not for inferential claims.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- Core estimator -->
   <section class="section">
     <div class="container">
@@ -181,31 +198,31 @@
 
       <ul class="tier-list">
         <li>
-          <span class="badge badge--headline">headline-eligible</span>
+          <span class="badge badge--headline">Headline claim</span>
           <span>Inferential cell with confirmatory-priority trait, proper survey-design inference, and no provisional flags. Only these cells are used in the headline claim.</span>
         </li>
         <li>
-          <span class="badge badge--supporting">supporting</span>
+          <span class="badge badge--supporting">Supporting evidence</span>
           <span>Inferential cell from a secondary or exploratory-priority trait. Broadens domain coverage but is not part of the headline evidence.</span>
         </li>
         <li>
-          <span class="badge badge--provisional">provisional</span>
+          <span class="badge badge--provisional">Provisional</span>
           <span>Cell that relies on fallback weights, alternate public weight sources, or other provisional inference paths. Retained for sensitivity analysis but excluded from headline claims.</span>
         </li>
         <li>
-          <span class="badge badge--method">method-limited</span>
+          <span class="badge badge--method">Method-limited</span>
           <span>Cell using simple-design SE approximation instead of replicate weights. Point estimates may be reasonable, but the uncertainty quantification is weaker.</span>
         </li>
         <li>
-          <span class="badge badge--qa">QA-only</span>
+          <span class="badge badge--qa">QA only</span>
           <span>Cell that falls below sample-size thresholds, has bounded-scale issues, or is otherwise unsuitable for inferential use. Retained for quality-assurance diagnostics only.</span>
         </li>
       </ul>
 
       <p>
         This system ensures that public-facing summaries do not collapse strong and weak
-        evidence into a single pooled claim. The headline finding (94% male-greater across
-        50 cells) uses only headline-eligible cells.
+        evidence into a single pooled claim. The public headline summary uses only rows
+        labeled <strong>Headline claim</strong>.
       </p>
     </div>
   </section>

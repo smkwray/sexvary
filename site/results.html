@@ -39,6 +39,18 @@
       <p>
         There are 67 headline-eligible confirmatory cells and 263 supporting inferential cells. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
       </p>
+      <details class="callout">
+  <summary class="callout__title" style="cursor:pointer">What these claim-status labels mean</summary>
+  <div style="margin-top:0.75rem">
+    <ul style="margin:0 0 0 1.2rem;display:grid;gap:0.6rem">
+          <li><strong>Headline claim</strong>: Core confirmatory rows with the strongest survey-design handling and no fallback flags. Only these rows feed the main headline claim.</li>
+          <li><strong>Supporting evidence</strong>: Inferential rows kept for added age or domain coverage, but still kept separate from the main headline claim.</li>
+          <li><strong>Provisional</strong>: Rows that depend on fallback weights or other temporary inference paths. They stay visible, but they do not count as headline evidence.</li>
+          <li><strong>Method-limited</strong>: Rows with usable point estimates but weaker uncertainty estimates, usually because only simple effective-sample-size approximations were available.</li>
+          <li><strong>QA only</strong>: Rows retained for transparency and diagnostics only, not for inferential claims.</li>
+    </ul>
+  </div>
+</details>
       <div id="chart-forest" style="overflow-x:auto"></div>
       <div class="table-wrap">
   <table class="data-table">

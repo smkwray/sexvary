@@ -211,6 +211,14 @@ code { font-family: var(--mono); font-size: 0.88em; background: var(--table-stri
   margin-bottom: 0.35rem;
 }
 
+details.callout summary {
+  list-style: none;
+}
+
+details.callout summary::-webkit-details-marker {
+  display: none;
+}
+
 /* === Figures === */
 .figure {
   margin: 2rem 0;
