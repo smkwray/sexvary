@@ -34,6 +34,55 @@ SUPPORTING_EVIDENCE_DATASET_IDS = (
     "psid_cds_tas",
 )
 
+NEAR_EQUAL_VR_TOLERANCE = 0.005
+DISPLAY_COLUMNS = [
+    "dataset_id",
+    "dataset_label",
+    "cycle_or_wave",
+    "country",
+    "age_band",
+    "trait_id",
+    "trait_label",
+    "trait_family",
+    "trait_priority",
+    "priority_display",
+    "evidence_status",
+    "claim_status_display",
+    "comparability_tier",
+    "direction",
+    "log_variance_ratio",
+    "abs_log_vr",
+    "variance_ratio",
+    "distance_from_equal",
+    "se_log_variance_ratio",
+    "ci_low_log_variance_ratio",
+    "ci_high_log_variance_ratio",
+    "vr_ci_low",
+    "vr_ci_high",
+    "male_n",
+    "female_n",
+    "n_total",
+    "mean_difference",
+    "inference_method",
+    "headline_eligible",
+    "provisional",
+    "method_limited",
+    "qa_only",
+    "suppression_reason",
+    "qa_flags",
+    "display_explanation",
+]
+
+VR_HISTOGRAM_BINS = (
+    (-np.inf, 0.75, "<0.75x"),
+    (0.75, 0.9, "0.75x-0.90x"),
+    (0.9, 0.98, "0.90x-0.98x"),
+    (0.98, 1.02, "0.98x-1.02x"),
+    (1.02, 1.1, "1.02x-1.10x"),
+    (1.1, 1.25, "1.10x-1.25x"),
+    (1.25, np.inf, ">1.25x"),
+)
+
 
 @dataclass(frozen=True)
 class ComparisonSource:
@@ -61,10 +110,191 @@ def _trait_metadata(trait_id: str, registry: Registry) -> tuple[str, str, str, s
         return root, root.replace("_", " ").title(), "unknown", "unknown"
 
 
+def _priority_display(value: object) -> str:
+    mapping = {
+        "confirmatory": "Confirmatory",
+        "secondary": "Secondary",
+        "exploratory": "Exploratory",
+        "unknown": "Unknown",
+    }
+    return mapping.get(str(value), str(value).replace("_", " ").title())
+
+
+def _claim_status_display(*, evidence_status: object, trait_priority: object) -> str:
+    status = str(evidence_status)
+    priority = str(trait_priority)
+    if status == "qa_only":
+        return "QA only"
+    if status == "provisional":
+        return "Provisional"
+    if status == "method_limited":
+        return "Method-limited"
+    if priority == "confirmatory":
+        return "Headline claim"
+    return "Supporting evidence"
+
+
+def _direction_from_values(
+    *,
+    log_variance_ratio: float | None,
+    variance_ratio: float | None,
+    effect_available: bool,
+) -> str:
+    if not effect_available:
+        return "unavailable"
+    vr = variance_ratio
+    if vr is not None and np.isfinite(vr) and abs(vr - 1.0) <= NEAR_EQUAL_VR_TOLERANCE:
+        return "near_equal"
+    if log_variance_ratio is not None and np.isfinite(log_variance_ratio):
+        return "male_greater" if log_variance_ratio > 0 else "female_greater"
+    return "unavailable"
+
+
+def _direction_display(value: object) -> str:
+    mapping = {
+        "male_greater": "Male-greater variability",
+        "female_greater": "Female-greater variability",
+        "near_equal": "Near equal variance",
+        "unavailable": "Unavailable",
+    }
+    return mapping.get(str(value), str(value).replace("_", " ").title())
+
+
+def _build_display_explanation(row: pd.Series) -> str:
+    claim = str(row["claim_status_display"])
+    direction = _direction_display(row["direction"])
+    if not bool(row["effect_available"]):
+        detail = "no usable variance-ratio estimate"
+    elif bool(row["ci_available"]):
+        detail = (
+            f"{direction.lower()} (VR {row['variance_ratio']:.2f}x, "
+            f"95% CI {row['vr_ci_low']:.2f}x to {row['vr_ci_high']:.2f}x)"
+        )
+    else:
+        detail = f"{direction.lower()} (VR {row['variance_ratio']:.2f}x)"
+    note = ""
+    if not pd.isna(row["suppression_reason"]):
+        note = f"; {str(row['suppression_reason']).replace('_', ' ')}"
+    return f"{claim}. {detail}{note}."
+
+
+def _display_columns(df: pd.DataFrame) -> list[str]:
+    return [column for column in DISPLAY_COLUMNS if column in df.columns]
+
+
+def _rank_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int,
+    sort_by: str,
+    ascending: bool,
+    priorities: tuple[str, ...] | None = None,
+    require_ci: bool = True,
+    direction: str | None = None,
+) -> pd.DataFrame:
+    eligible = df.copy()
+    if require_ci:
+        eligible = eligible[eligible["ci_available"]].copy()
+    else:
+        eligible = eligible[eligible["effect_available"]].copy()
+    if priorities is not None:
+        eligible = eligible[eligible["trait_priority"].isin(priorities)].copy()
+    if direction is not None:
+        eligible = eligible[eligible["direction"] == direction].copy()
+    eligible = eligible[np.isfinite(pd.to_numeric(eligible.get(sort_by), errors="coerce"))].copy()
+    if eligible.empty:
+        return pd.DataFrame(columns=_display_columns(df))
+    ranked = eligible.sort_values(sort_by, ascending=ascending, kind="stable").head(limit).copy()
+    return ranked[_display_columns(ranked)].reset_index(drop=True)
+
+
+def ensure_display_ready_columns(df: pd.DataFrame) -> pd.DataFrame:
+    work = df.copy()
+    work["log_variance_ratio"] = pd.to_numeric(work.get("log_variance_ratio"), errors="coerce")
+    work["se_log_variance_ratio"] = pd.to_numeric(work.get("se_log_variance_ratio"), errors="coerce")
+    work["variance_ratio"] = pd.to_numeric(work.get("variance_ratio"), errors="coerce")
+    work["variance_ratio"] = work["variance_ratio"].where(np.isfinite(work["variance_ratio"]), np.exp(work["log_variance_ratio"]))
+    work["ci_low_log_variance_ratio"] = pd.to_numeric(
+        work.get("ci_low_log_variance_ratio", pd.Series(np.nan, index=work.index)),
+        errors="coerce",
+    )
+    work["ci_high_log_variance_ratio"] = pd.to_numeric(
+        work.get("ci_high_log_variance_ratio", pd.Series(np.nan, index=work.index)),
+        errors="coerce",
+    )
+    fallback_half_width = 1.96 * work["se_log_variance_ratio"]
+    work["ci_low_log_variance_ratio"] = work["ci_low_log_variance_ratio"].where(
+        np.isfinite(work["ci_low_log_variance_ratio"]),
+        work["log_variance_ratio"] - fallback_half_width,
+    )
+    work["ci_high_log_variance_ratio"] = work["ci_high_log_variance_ratio"].where(
+        np.isfinite(work["ci_high_log_variance_ratio"]),
+        work["log_variance_ratio"] + fallback_half_width,
+    )
+    work["headline_eligible"] = work.get("headline_eligible", pd.Series(False, index=work.index)).fillna(False).astype(bool)
+    work["provisional"] = work.get("provisional", pd.Series(False, index=work.index)).fillna(False).astype(bool)
+    work["method_limited"] = work.get("method_limited", pd.Series(False, index=work.index)).fillna(False).astype(bool)
+    work["qa_only"] = work.get("qa_only", pd.Series(False, index=work.index)).fillna(False).astype(bool)
+    work["ci_available"] = work.get(
+        "ci_available",
+        work["headline_eligible"] | work["provisional"] | work["method_limited"],
+    )
+    work["ci_available"] = work["ci_available"].fillna(False).astype(bool)
+    work["effect_available"] = work.get("effect_available", np.isfinite(work["log_variance_ratio"]))
+    work["effect_available"] = work["effect_available"].fillna(False).astype(bool)
+    work["male_n"] = pd.to_numeric(work.get("male_n"), errors="coerce")
+    work["female_n"] = pd.to_numeric(work.get("female_n"), errors="coerce")
+    work["trait_priority"] = work.get("trait_priority", pd.Series("unknown", index=work.index)).astype("string")
+    work["evidence_status"] = work.get("evidence_status", pd.Series(pd.NA, index=work.index)).astype("string")
+    work["suppression_reason"] = work.get("suppression_reason", pd.Series(pd.NA, index=work.index))
+    work["vr_ci_low"] = np.exp(work["ci_low_log_variance_ratio"])
+    work["vr_ci_high"] = np.exp(work["ci_high_log_variance_ratio"])
+    work["direction"] = [
+        _direction_from_values(
+            log_variance_ratio=float(log_vr_value) if np.isfinite(log_vr_value) else None,
+            variance_ratio=float(vr_value) if np.isfinite(vr_value) else None,
+            effect_available=bool(effect_available),
+        )
+        for log_vr_value, vr_value, effect_available in zip(
+            work["log_variance_ratio"],
+            work["variance_ratio"],
+            work["effect_available"],
+            strict=False,
+        )
+    ]
+    work["abs_log_vr"] = work["log_variance_ratio"].abs()
+    work["distance_from_equal"] = (work["variance_ratio"] - 1.0).abs()
+    work["n_total"] = work["male_n"] + work["female_n"]
+    work.loc[~(np.isfinite(work["male_n"]) & np.isfinite(work["female_n"])), "n_total"] = np.nan
+    work["claim_status_display"] = [
+        _claim_status_display(evidence_status=status, trait_priority=priority)
+        for status, priority in zip(work["evidence_status"], work["trait_priority"], strict=False)
+    ]
+    work["priority_display"] = work["trait_priority"].map(_priority_display)
+    work["display_explanation"] = work.apply(_build_display_explanation, axis=1)
+    work["male_greater_variability"] = work["log_variance_ratio"] > 0
+    return work
+
+
 def normalize_estimate_table(df: pd.DataFrame, *, source_id: str, registry: Registry) -> pd.DataFrame:
     work = annotate_estimate_evidence(df, registry=registry)
     age_col = "age_band" if "age_band" in work.columns else "grade_or_age_band"
     mean_col = "mean_diff" if "mean_diff" in work.columns else "mean_difference" if "mean_difference" in work.columns else None
+    log_vr = pd.to_numeric(work.get("log_variance_ratio"), errors="coerce")
+    se_log_vr = pd.to_numeric(work.get("se_log_variance_ratio"), errors="coerce")
+    variance_ratio = pd.to_numeric(work.get("variance_ratio"), errors="coerce")
+    variance_ratio = variance_ratio.where(np.isfinite(variance_ratio), np.exp(log_vr))
+    ci_low_log = pd.to_numeric(
+        work.get("ci_low_log_variance_ratio", pd.Series(np.nan, index=work.index)),
+        errors="coerce",
+    )
+    ci_high_log = pd.to_numeric(
+        work.get("ci_high_log_variance_ratio", pd.Series(np.nan, index=work.index)),
+        errors="coerce",
+    )
+    fallback_half_width = 1.96 * se_log_vr
+    ci_low_log = ci_low_log.where(np.isfinite(ci_low_log), log_vr - fallback_half_width)
+    ci_high_log = ci_high_log.where(np.isfinite(ci_high_log), log_vr + fallback_half_width)
 
     normalized = pd.DataFrame(
         {
@@ -74,9 +304,11 @@ def normalize_estimate_table(df: pd.DataFrame, *, source_id: str, registry: Regi
             "country": work.get("country", pd.Series("all", index=work.index)).astype("string"),
             "age_band": work.get(age_col, pd.Series(pd.NA, index=work.index)).astype("string"),
             "trait_id": work["trait_id"].astype("string"),
-            "log_variance_ratio": pd.to_numeric(work.get("log_variance_ratio"), errors="coerce"),
-            "se_log_variance_ratio": pd.to_numeric(work.get("se_log_variance_ratio"), errors="coerce"),
-            "variance_ratio": pd.to_numeric(work.get("variance_ratio"), errors="coerce"),
+            "log_variance_ratio": log_vr,
+            "se_log_variance_ratio": se_log_vr,
+            "variance_ratio": variance_ratio,
+            "ci_low_log_variance_ratio": ci_low_log,
+            "ci_high_log_variance_ratio": ci_high_log,
             "mean_difference": pd.to_numeric(work.get(mean_col) if mean_col else np.nan, errors="coerce"),
             "inference_method": work.get("inference_method", pd.Series(pd.NA, index=work.index)).astype("string"),
             "male_n": pd.to_numeric(work.get("male_n"), errors="coerce"),
@@ -101,10 +333,7 @@ def normalize_estimate_table(df: pd.DataFrame, *, source_id: str, registry: Regi
     normalized["trait_label"] = trait_meta.map(lambda item: item[1])
     normalized["trait_family"] = normalized["trait_family"].fillna(trait_meta.map(lambda item: item[2]))
     normalized["trait_priority"] = normalized["trait_priority"].fillna(trait_meta.map(lambda item: item[3]))
-    normalized["ci_available"] = normalized["headline_eligible"] | normalized["provisional"] | normalized["method_limited"]
-    normalized["effect_available"] = np.isfinite(normalized["log_variance_ratio"])
-    normalized["male_greater_variability"] = normalized["log_variance_ratio"] > 0
-    return normalized
+    return ensure_display_ready_columns(normalized)
 
 
 def load_comparison_tables(
@@ -207,29 +436,14 @@ def build_priority_summary(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_top_cells(df: pd.DataFrame, *, limit: int = 20, priorities: tuple[str, ...] | None = None) -> pd.DataFrame:
-    eligible = df[df["ci_available"]].copy()
-    if priorities is not None:
-        eligible = eligible[eligible["trait_priority"].isin(priorities)].copy()
-    if eligible.empty:
-        return pd.DataFrame()
-    eligible["abs_log_variance_ratio"] = eligible["log_variance_ratio"].abs()
-    top = eligible.sort_values("abs_log_variance_ratio", ascending=False, kind="stable").head(limit)
-    return top[
-        [
-            "dataset_label",
-            "trait_priority",
-            "evidence_status",
-            "cycle_or_wave",
-            "age_band",
-            "trait_label",
-            "trait_family",
-            "log_variance_ratio",
-            "variance_ratio",
-            "se_log_variance_ratio",
-            "suppression_reason",
-            "qa_flags",
-        ]
-    ].reset_index(drop=True)
+    return _rank_cells(
+        df,
+        limit=limit,
+        sort_by="abs_log_vr",
+        ascending=False,
+        priorities=priorities,
+        require_ci=True,
+    )
 
 
 def build_dataset_focus_table(
@@ -320,28 +534,99 @@ def build_supporting_evidence_top_cells(
     dataset_ids: tuple[str, ...] = SUPPORTING_EVIDENCE_DATASET_IDS,
     limit: int = 30,
 ) -> pd.DataFrame:
-    support = df[df["dataset_id"].isin(dataset_ids) & df["ci_available"]].copy()
-    if support.empty:
-        return pd.DataFrame()
-    support["abs_log_variance_ratio"] = support["log_variance_ratio"].abs()
-    top = support.sort_values("abs_log_variance_ratio", ascending=False, kind="stable").head(limit)
-    return top[
-        [
-            "dataset_label",
-            "trait_priority",
-            "evidence_status",
-            "cycle_or_wave",
-            "age_band",
-            "trait_label",
-            "trait_family",
-            "headline_eligible",
-            "log_variance_ratio",
-            "variance_ratio",
-            "se_log_variance_ratio",
-            "suppression_reason",
-            "qa_flags",
-        ]
-    ].reset_index(drop=True)
+    support = df[df["dataset_id"].isin(dataset_ids)].copy()
+    return _rank_cells(
+        support,
+        limit=limit,
+        sort_by="abs_log_vr",
+        ascending=False,
+        require_ci=True,
+    )
+
+
+def build_strongest_male_greater_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int = 20,
+    priorities: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    return _rank_cells(
+        df,
+        limit=limit,
+        sort_by="log_variance_ratio",
+        ascending=False,
+        priorities=priorities,
+        require_ci=True,
+        direction="male_greater",
+    )
+
+
+def build_strongest_female_greater_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int = 20,
+    priorities: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    return _rank_cells(
+        df,
+        limit=limit,
+        sort_by="log_variance_ratio",
+        ascending=True,
+        priorities=priorities,
+        require_ci=True,
+        direction="female_greater",
+    )
+
+
+def build_closest_to_equal_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int = 20,
+    priorities: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    return _rank_cells(
+        df,
+        limit=limit,
+        sort_by="distance_from_equal",
+        ascending=True,
+        priorities=priorities,
+        require_ci=True,
+    )
+
+
+def build_largest_n_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int = 20,
+    priorities: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    return _rank_cells(
+        df,
+        limit=limit,
+        sort_by="n_total",
+        ascending=False,
+        priorities=priorities,
+        require_ci=False,
+    )
+
+
+def build_widest_ci_cells(
+    df: pd.DataFrame,
+    *,
+    limit: int = 20,
+    priorities: tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    work = df.copy()
+    work["vr_ci_width"] = work["vr_ci_high"] - work["vr_ci_low"]
+    ranked = _rank_cells(
+        work,
+        limit=limit,
+        sort_by="vr_ci_width",
+        ascending=False,
+        priorities=priorities,
+        require_ci=True,
+    )
+    return ranked
 
 
 def _age_band_order_value(value: str | float | int | None) -> float:
@@ -376,3 +661,37 @@ def build_age_profile_summary(df: pd.DataFrame) -> pd.DataFrame:
         .sort_values(["dataset_label", "age_order", "age_band"], kind="stable")
     )
     return summary.reset_index(drop=True)
+
+
+def build_dataset_distribution_summary(df: pd.DataFrame) -> pd.DataFrame:
+    eligible = df[df["effect_available"]].copy()
+    if eligible.empty:
+        return pd.DataFrame()
+
+    rows: list[dict[str, object]] = []
+    quantiles = [0.1, 0.25, 0.5, 0.75, 0.9]
+    labels = ["p10", "p25", "p50", "p75", "p90"]
+    for dataset_id, sub in eligible.groupby("dataset_id", sort=True):
+        vr_quantiles = sub["variance_ratio"].quantile(quantiles)
+        row: dict[str, object] = {
+            "dataset_id": dataset_id,
+            "dataset_label": sub["dataset_label"].iloc[0],
+            "cells": int(len(sub)),
+            "cells_with_ci": int(sub["ci_available"].sum()),
+            "share_male_greater": _share_male_greater(sub),
+            "male_greater_cells": int((sub["direction"] == "male_greater").sum()),
+            "female_greater_cells": int((sub["direction"] == "female_greater").sum()),
+            "near_equal_cells": int((sub["direction"] == "near_equal").sum()),
+        }
+        for label, value in zip(labels, vr_quantiles.tolist(), strict=False):
+            row[f"variance_ratio_{label}"] = float(value)
+        for lower, upper, bucket_label in VR_HISTOGRAM_BINS:
+            if np.isinf(lower):
+                mask = sub["variance_ratio"] < upper
+            elif np.isinf(upper):
+                mask = sub["variance_ratio"] >= lower
+            else:
+                mask = (sub["variance_ratio"] >= lower) & (sub["variance_ratio"] < upper)
+            row[f"hist_{bucket_label}"] = int(mask.sum())
+        rows.append(row)
+    return pd.DataFrame(rows).sort_values("dataset_label", kind="stable").reset_index(drop=True)

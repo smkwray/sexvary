@@ -5,20 +5,22 @@ from pathlib import Path
 
 import pandas as pd
 
+from .cross_dataset import (
+    build_dataset_inventory,
+    build_priority_summary,
+    build_supporting_evidence_summary,
+    build_top_cells,
+    ensure_display_ready_columns,
+)
 from .reporting import markdown_table
+from .site_bundle import build_site_bundle, render_readme, render_site_pages, write_site_bundle_json
 
 
 REQUIRED_TABLES = {
-    "dataset_inventory": Path("results/tables/cross_dataset_dataset_inventory.csv"),
-    "priority_summary": Path("results/tables/cross_dataset_priority_summary.csv"),
-    "headline_confirmatory_cells": Path("results/tables/cross_dataset_headline_confirmatory_cells.csv"),
-    "supporting_evidence_summary": Path("results/tables/cross_dataset_supporting_evidence_summary.csv"),
-    "supporting_evidence_robustness": Path("results/tables/cross_dataset_supporting_evidence_robustness.csv"),
+    "analysis_cells": Path("results/tables/cross_dataset_analysis_cells.csv"),
     "robustness_comparison": Path("results/tables/cross_dataset_robustness_comparison.csv"),
     "evidence_audit": Path("results/tables/cross_dataset_evidence_audit.csv"),
-    "provisional_inferential_cells": Path("results/tables/cross_dataset_provisional_inferential_cells.csv"),
-    "method_limited_inferential_cells": Path("results/tables/cross_dataset_method_limited_inferential_cells.csv"),
-    "qa_only_cells": Path("results/tables/cross_dataset_qa_only_cells.csv"),
+    "supporting_evidence_robustness": Path("results/tables/cross_dataset_supporting_evidence_robustness.csv"),
 }
 
 CORE_FIGURES = {
@@ -53,6 +55,13 @@ def _read_csv(root: Path, relpath: Path) -> pd.DataFrame:
     path = root / relpath
     if not path.exists():
         raise FileNotFoundError(f"Required paper-bundle input is missing: {path}")
+    return pd.read_csv(path)
+
+
+def _read_optional_csv(root: Path, relpath: Path) -> pd.DataFrame:
+    path = root / relpath
+    if not path.exists():
+        return pd.DataFrame()
     return pd.read_csv(path)
 
 
@@ -377,32 +386,61 @@ def _build_public_summary(
 
 
 def build_paper_bundle(root: Path, output_dir: Path) -> dict[str, Path]:
-    tables = {name: _read_csv(root, relpath) for name, relpath in REQUIRED_TABLES.items()}
+    tables = {
+        name: (_read_csv(root, relpath) if name in REQUIRED_TABLES else _read_optional_csv(root, relpath))
+        for name, relpath in REQUIRED_TABLES.items()
+    }
     backend_manifest = _load_latest_backend_manifest(root)
+    comparison_df = ensure_display_ready_columns(tables["analysis_cells"])
+    dataset_inventory = build_dataset_inventory(comparison_df)
+    priority_summary = build_priority_summary(comparison_df)
+    headline_cells = build_top_cells(
+        comparison_df[comparison_df["headline_eligible"]],
+        limit=50,
+        priorities=("confirmatory",),
+    )
+    supporting_summary = build_supporting_evidence_summary(comparison_df)
+    provisional_inferential_cells = comparison_df[comparison_df["provisional"]].sort_values(
+        ["dataset_label", "trait_label", "cycle_or_wave", "age_band"],
+        kind="stable",
+    )
+    method_limited_inferential_cells = comparison_df[comparison_df["method_limited"]].sort_values(
+        ["dataset_label", "trait_label", "cycle_or_wave", "age_band"],
+        kind="stable",
+    )
+    qa_only_cells = comparison_df[comparison_df["qa_only"]].sort_values(
+        ["dataset_label", "trait_label", "cycle_or_wave", "age_band"],
+        kind="stable",
+    )
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
     manuscript_text = _build_manuscript_text(
         root=root,
-        dataset_inventory=tables["dataset_inventory"],
-        priority_summary=tables["priority_summary"],
-        headline_cells=tables["headline_confirmatory_cells"],
-        supporting_summary=tables["supporting_evidence_summary"],
+        dataset_inventory=dataset_inventory,
+        priority_summary=priority_summary,
+        headline_cells=headline_cells,
+        supporting_summary=supporting_summary,
         supporting_robustness=tables["supporting_evidence_robustness"],
         robustness_comparison=tables["robustness_comparison"],
         evidence_audit=tables["evidence_audit"],
         backend_manifest=backend_manifest,
     )
     appendix_text = _build_appendix_text(
-        provisional=tables["provisional_inferential_cells"],
-        method_limited=tables["method_limited_inferential_cells"],
-        qa_only=tables["qa_only_cells"],
+        provisional=provisional_inferential_cells,
+        method_limited=method_limited_inferential_cells,
+        qa_only=qa_only_cells,
         evidence_audit=tables["evidence_audit"],
     )
-    public_summary_text, public_payload = _build_public_summary(
-        dataset_inventory=tables["dataset_inventory"],
-        headline_cells=tables["headline_confirmatory_cells"],
-        supporting_summary=tables["supporting_evidence_summary"],
+    public_summary_text, _ = _build_public_summary(
+        dataset_inventory=dataset_inventory,
+        headline_cells=headline_cells,
+        supporting_summary=supporting_summary,
+    )
+    site_bundle = build_site_bundle(
+        comparison_df,
+        robustness_summary=tables["robustness_comparison"],
+        supporting_robustness=tables["supporting_evidence_robustness"],
     )
 
     manuscript_path = output_dir / "manuscript.md"
@@ -412,7 +450,10 @@ def build_paper_bundle(root: Path, output_dir: Path) -> dict[str, Path]:
     manuscript_path.write_text(manuscript_text, encoding="utf-8")
     appendix_path.write_text(appendix_text, encoding="utf-8")
     public_summary_path.write_text(public_summary_text, encoding="utf-8")
-    site_payload_path.write_text(json.dumps(public_payload, indent=2), encoding="utf-8")
+    write_site_bundle_json(site_bundle, site_payload_path)
+    site_asset_path = write_site_bundle_json(site_bundle, root / "site" / "assets" / "data.json")
+    site_pages = render_site_pages(site_bundle, root / "site")
+    readme_path = render_readme(site_bundle, root / "README.md")
 
     figure_manifest = pd.DataFrame(
         [
@@ -462,6 +503,11 @@ def build_paper_bundle(root: Path, output_dir: Path) -> dict[str, Path]:
         "source_report_manifest_path": _relative_str(source_manifest_path, root=root),
         "public_summary_path": _relative_str(public_summary_path, root=root),
         "site_content_path": _relative_str(site_payload_path, root=root),
+        "published_site_bundle_path": _relative_str(site_asset_path, root=root),
+        "site_index_path": _relative_str(site_pages["index.html"], root=root),
+        "site_results_path": _relative_str(site_pages["results.html"], root=root),
+        "site_datasets_path": _relative_str(site_pages["datasets.html"], root=root),
+        "project_readme_path": _relative_str(readme_path, root=root),
         "backend_manifest_path": _relative_str(root / "results" / "run_manifests" / "backend_run_latest.json", root=root)
         if backend_manifest
         else None,
@@ -473,11 +519,15 @@ def build_paper_bundle(root: Path, output_dir: Path) -> dict[str, Path]:
     readme_lines = [
         "# Paper bundle",
         "",
-        "This directory is the canonical manuscript-facing bundle generated from the current comparison outputs.",
+        "This directory is the canonical manuscript-facing bundle generated from the normalized cross-dataset comparison output.",
         "",
         f"- Manuscript: `{_relative_str(manuscript_path, root=root)}`",
         f"- Appendix: `{_relative_str(appendix_path, root=root)}`",
         f"- Public summary: `{_relative_str(public_summary_path, root=root)}`",
+        f"- Site bundle: `{_relative_str(site_payload_path, root=root)}`",
+        f"- Published site bundle: `{_relative_str(site_asset_path, root=root)}`",
+        f"- Generated site pages: `{_relative_str(site_pages['index.html'], root=root)}`, `{_relative_str(site_pages['results.html'], root=root)}`, `{_relative_str(site_pages['datasets.html'], root=root)}`",
+        f"- Project README: `{_relative_str(readme_path, root=root)}`",
         f"- Figure manifest: `{_relative_str(figure_manifest_path, root=root)}`",
         f"- Table manifest: `{_relative_str(table_manifest_path, root=root)}`",
     ]
@@ -500,6 +550,7 @@ def build_paper_bundle(root: Path, output_dir: Path) -> dict[str, Path]:
         "appendix": appendix_path,
         "public_summary": public_summary_path,
         "site_content": site_payload_path,
+        "site_bundle_public": site_asset_path,
         "figure_manifest": figure_manifest_path,
         "table_manifest": table_manifest_path,
         "source_report_manifest": source_manifest_path,

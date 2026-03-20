@@ -8,14 +8,20 @@ from sexvary.config import build_registry
 from sexvary.cross_dataset import (
     SUPPORTING_EVIDENCE_DATASET_IDS,
     build_age_profile_summary,
+    build_closest_to_equal_cells,
     build_dataset_focus_table,
     build_dataset_focus_split,
+    build_dataset_distribution_summary,
     build_dataset_inventory,
+    build_largest_n_cells,
     build_priority_summary,
+    build_strongest_female_greater_cells,
+    build_strongest_male_greater_cells,
     build_supporting_evidence_summary,
     build_supporting_evidence_top_cells,
     build_top_cells,
     build_trait_family_summary,
+    build_widest_ci_cells,
     load_comparison_tables,
     normalize_estimate_table,
 )
@@ -70,6 +76,13 @@ def test_normalize_estimate_table_handles_schema_variants() -> None:
     assert combined["ci_available"].tolist() == [True, True]
     assert combined["evidence_status"].tolist() == ["method_limited", "headline_eligible"]
     assert combined["headline_eligible"].tolist() == [False, True]
+    assert combined["direction"].tolist() == ["male_greater", "male_greater"]
+    assert combined["claim_status_display"].tolist() == ["Method-limited", "Headline claim"]
+    assert combined["priority_display"].tolist() == ["Secondary", "Confirmatory"]
+    assert combined["n_total"].tolist() == [410.0, 1950.0]
+    assert combined["vr_ci_low"].notna().all()
+    assert combined["vr_ci_high"].notna().all()
+    assert combined["display_explanation"].str.contains("VR").all()
 
     inventory = build_dataset_inventory(combined)
     assert inventory["dataset_id"].tolist() == ["nlsy79_main", "piaac_cycle2"]
@@ -95,6 +108,10 @@ def test_normalize_estimate_table_handles_schema_variants() -> None:
 
     age_profile = build_age_profile_summary(combined)
     assert set(age_profile["age_band"]) == {"16-19"}
+
+    distribution = build_dataset_distribution_summary(combined)
+    assert set(distribution["dataset_id"]) == {"nlsy79_main", "piaac_cycle2"}
+    assert "variance_ratio_p50" in distribution.columns
 
 
 def test_cross_dataset_summaries_ignore_unavailable_rows_for_direction_shares() -> None:
@@ -299,3 +316,43 @@ def test_supporting_evidence_builders_split_headline_and_method_limited_rows() -
 
     assert set(top_cells["dataset_label"]) == {"NHANES selected cycles", "HRS public", "PSID CDS / TAS"}
     assert "headline_eligible" in top_cells.columns
+
+
+def test_rank_builders_cover_direction_size_ci_and_equal_views() -> None:
+    registry = build_registry()
+    df = pd.DataFrame(
+        {
+            "dataset_id": ["piaac_cycle2", "piaac_cycle2", "ecls_k_2011", "nhanes_2011_2023"],
+            "cycle_or_wave": ["cycle2", "cycle2", "fall_kindergarten_2010", "2011-2012"],
+            "country": ["United States"] * 4,
+            "age_band": ["60-65", "40-44", "K", "20-23"],
+            "trait_id": ["numeracy", "literacy", "reading_achievement", "grip_strength_kg"],
+            "log_variance_ratio": [0.35, 0.004, -0.6, 0.2],
+            "se_log_variance_ratio": [0.05, 0.02, 0.03, 0.15],
+            "variance_ratio": [1.42, 1.004, 0.55, 1.22],
+            "mean_diff": [0.0, 0.0, 0.0, 0.0],
+            "inference_method": [
+                "replicate_weights_brr",
+                "replicate_weights_brr",
+                "stratified_cluster_bootstrap_psu",
+                "stratified_cluster_bootstrap_psu",
+            ],
+            "male_n": [500, 520, 800, 1100],
+            "female_n": [510, 540, 780, 1200],
+            "qa_flags": [pd.NA, pd.NA, pd.NA, pd.NA],
+        }
+    )
+    normalized = normalize_estimate_table(df, source_id="mixed", registry=registry)
+
+    strongest_male = build_strongest_male_greater_cells(normalized, limit=2)
+    strongest_female = build_strongest_female_greater_cells(normalized, limit=2)
+    closest_equal = build_closest_to_equal_cells(normalized, limit=2)
+    largest_n = build_largest_n_cells(normalized, limit=2)
+    widest_ci = build_widest_ci_cells(normalized, limit=2)
+
+    assert strongest_male.iloc[0]["direction"] == "male_greater"
+    assert strongest_male.iloc[0]["trait_label"] == "Numeracy"
+    assert strongest_female.iloc[0]["direction"] == "female_greater"
+    assert closest_equal.iloc[0]["direction"] == "near_equal"
+    assert largest_n.iloc[0]["n_total"] == 2300.0
+    assert widest_ci.iloc[0]["trait_label"] == "Grip strength (kg)"

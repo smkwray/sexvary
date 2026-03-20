@@ -61,25 +61,60 @@ var charts = (function () {
   /* ── tooltip formatter helper ── */
   function vrTip(params) {
     var p = Array.isArray(params) ? params[0] : params;
+    var datum = p.data || {};
     var vr = typeof p.value === 'number' ? p.value : (Array.isArray(p.value) ? p.value[0] : p.value);
     var dir = vr >= 1 ? 'Male > Female' : 'Female > Male';
     var pct = vr >= 1 ? ((vr - 1) * 100).toFixed(1) + '% more male variability'
                        : ((1 - vr) * 100).toFixed(1) + '% more female variability';
     if (Math.abs(vr - 1) < 0.005) { dir = 'Near equal'; pct = 'approximately equal variance'; }
-    return '<strong>' + (p.name || p.seriesName || '') + '</strong><br/>'
-      + 'VR: ' + vr.toFixed(3) + '\u00d7<br/>'
-      + dir + '<br/>'
+    var out = '<strong>' + (datum.label || p.name || p.seriesName || '') + '</strong><br/>'
+      + 'VR: ' + vr.toFixed(3) + '\u00d7<br/>';
+    if (typeof datum.ciLow === 'number' && typeof datum.ciHigh === 'number') {
+      out += '95% CI: ' + datum.ciLow.toFixed(3) + '\u00d7 to ' + datum.ciHigh.toFixed(3) + '\u00d7<br/>';
+    }
+    out += dir + '<br/>'
       + '<span style="color:#888">' + pct + '</span>';
+    return out;
   }
 
   /* ── FOREST PLOT ── */
   function forest(el, data, opts) {
     opts = opts || {};
     var title = opts.title || '';
-    // data: [{label, vr}] — sorted by value
+    // data: [{label, vr, ciLow?, ciHigh?}] — sorted by value
     var sorted = data.slice().sort(function (a, b) { return a.vr - b.vr; });
     var labels = sorted.map(function (d) { return d.label; });
-    var values = sorted.map(function (d) { return d.vr; });
+    var pointData = sorted.map(function (d, i) {
+      return {
+        value: [d.vr, i],
+        name: d.label,
+        label: d.label,
+        vr: d.vr,
+        ciLow: typeof d.ciLow === 'number' ? d.ciLow : null,
+        ciHigh: typeof d.ciHigh === 'number' ? d.ciHigh : null,
+        itemStyle: { color: d.vr >= 1 ? null : null }
+      };
+    });
+    var whiskerData = sorted
+      .map(function (d, i) {
+        if (typeof d.ciLow !== 'number' || typeof d.ciHigh !== 'number') {
+          return null;
+        }
+        return { value: [i, d.ciLow, d.ciHigh, d.vr], label: d.label };
+      })
+      .filter(Boolean);
+    var domainValues = [];
+    sorted.forEach(function (d) {
+      if (typeof d.vr === 'number') { domainValues.push(d.vr); }
+      if (typeof d.ciLow === 'number') { domainValues.push(d.ciLow); }
+      if (typeof d.ciHigh === 'number') { domainValues.push(d.ciHigh); }
+    });
+    var rawMin = domainValues.length ? Math.min.apply(null, domainValues) : 0.8;
+    var rawMax = domainValues.length ? Math.max.apply(null, domainValues) : 1.2;
+    var span = Math.max(0.1, rawMax - rawMin);
+    var pad = Math.max(0.05, span * 0.12);
+    var xMin = Math.max(0, Math.floor((Math.min(rawMin - pad, 0.98)) * 20) / 20);
+    var xMax = Math.ceil((Math.max(rawMax + pad, 1.02)) * 20) / 20;
 
     var h = Math.max(420, sorted.length * 28 + 80);
     el.style.height = h + 'px';
@@ -99,6 +134,8 @@ var charts = (function () {
         grid: { left: 10, right: 40, top: title ? 40 : 16, bottom: 36, containLabel: true },
         xAxis: {
           type: 'value',
+          min: xMin,
+          max: xMax,
           name: 'Variance ratio (male / female)',
           nameLocation: 'center',
           nameGap: 24,
@@ -114,25 +151,65 @@ var charts = (function () {
           axisLine: { lineStyle: { color: c.border } },
           axisTick: { show: false }
         },
-        series: [{
-          type: 'scatter',
-          data: values.map(function (v, i) {
-            return {
-              value: v,
-              name: labels[i],
-              itemStyle: { color: v >= 1 ? c.pos : c.neg }
-            };
-          }),
-          symbolSize: 10,
-          emphasis: { itemStyle: { borderWidth: 2, borderColor: c.text }, scale: 1.4 },
-          markLine: {
+        series: [
+          {
+            type: 'custom',
             silent: true,
-            symbol: 'none',
-            lineStyle: { color: c.muted, type: 'dashed', width: 1.5 },
-            data: [{ xAxis: 1 }],
-            label: { show: true, formatter: '1.0\u00d7', position: 'end', color: c.muted, fontSize: 11 }
+            z: 1,
+            data: whiskerData,
+            renderItem: function (params, api) {
+              var idx = api.value(0);
+              var low = api.value(1);
+              var high = api.value(2);
+              var start = api.coord([low, idx]);
+              var end = api.coord([high, idx]);
+              var cap = 5;
+              return {
+                type: 'group',
+                children: [
+                  {
+                    type: 'line',
+                    shape: { x1: start[0], y1: start[1], x2: end[0], y2: end[1] },
+                    style: { stroke: c.muted, lineWidth: 2 }
+                  },
+                  {
+                    type: 'line',
+                    shape: { x1: start[0], y1: start[1] - cap, x2: start[0], y2: start[1] + cap },
+                    style: { stroke: c.muted, lineWidth: 2 }
+                  },
+                  {
+                    type: 'line',
+                    shape: { x1: end[0], y1: end[1] - cap, x2: end[0], y2: end[1] + cap },
+                    style: { stroke: c.muted, lineWidth: 2 }
+                  }
+                ]
+              };
+            }
+          },
+          {
+            type: 'scatter',
+            z: 2,
+            data: pointData.map(function (d) {
+              return {
+                value: d.value,
+                name: d.name,
+                label: d.label,
+                ciLow: d.ciLow,
+                ciHigh: d.ciHigh,
+                itemStyle: { color: d.vr >= 1 ? c.pos : c.neg }
+              };
+            }),
+            symbolSize: 10,
+            emphasis: { itemStyle: { borderWidth: 2, borderColor: c.text }, scale: 1.4 },
+            markLine: {
+              silent: true,
+              symbol: 'none',
+              lineStyle: { color: c.muted, type: 'dashed', width: 1.5 },
+              data: [{ xAxis: 1 }],
+              label: { show: true, formatter: '1.0\u00d7', position: 'end', color: c.muted, fontSize: 11 }
+            }
           }
-        }]
+        ]
       };
     });
   }
