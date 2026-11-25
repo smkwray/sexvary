@@ -191,6 +191,15 @@ def test_build_paper_bundle_writes_manuscript_appendix_and_manifests(tmp_path: P
     assert "Searchable Cell Explorer" in site_results
     assert "Per-Dataset Quantiles" in site_datasets
     assert "Selected headline cells" in readme
+    # The supporting pool counts the provisional PSID row and the method-limited HRS row,
+    # so the public text must not present the whole pool as eligible supporting evidence.
+    assert (
+        "Supporting datasets: HRS, NHANES and PSID add 3 inferential rows, reported separately "
+        "from the headline claim (1 eligible; the rest method-limited or provisional)"
+    ) in readme
+    assert "(1 eligible; the rest method-limited or provisional)" in site_results
+    assert "<th>Eligible rows</th>" in site_datasets
+    assert "<th>Headline</th>" not in site_datasets + site_results
     validate_site_bundle(site_bundle)
 
 

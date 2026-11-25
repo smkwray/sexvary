@@ -206,6 +206,24 @@ def _cell_label(row: dict[str, object]) -> str:
     )
 
 
+def _supporting_split(tables: dict[str, object]) -> tuple[str, int, int]:
+    """Name the supporting datasets and split their CI rows into eligible and flagged rows.
+
+    The supporting pool is a fixed set of datasets, not a claim status: its rows with a
+    confidence interval are either eligible or carry a method-limited or provisional flag.
+    """
+    rows = list(tables.get("supporting_summary", []))
+    names: list[str] = []
+    for row in rows:
+        name = str(row.get("dataset_label", "")).split(" ")[0]
+        if name and name not in names:
+            names.append(name)
+    named = ", ".join(names[:-1]) + " and " + names[-1] if len(names) > 1 else "".join(names)
+    with_ci = sum(int(row.get("rows_with_ci") or 0) for row in rows)
+    eligible = sum(int(row.get("headline_eligible_rows") or 0) for row in rows)
+    return named, with_ci, eligible
+
+
 def _dataset_claim_status(sub: pd.DataFrame) -> str:
     confirmatory_headline = sub[(sub["headline_eligible"]) & (sub["trait_priority"] == "confirmatory")]
     if not confirmatory_headline.empty:
@@ -631,7 +649,7 @@ def _inventory_table(rows: list[dict[str, object]]) -> str:
             ]
         )
     return _html_table(
-        ["Dataset", "Claim status", "Cells", "With CI", "Headline", "Median VR", "% Male-greater"],
+        ["Dataset", "Claim status", "Cells", "With CI", "Eligible rows", "Median VR", "% Male-greater"],
         html_rows,
         caption="Generated directly from the normalized cross-dataset table",
     )
@@ -812,7 +830,7 @@ def _home_page(bundle: dict[str, object]) -> str:
       <div class="stats">
         <div class="stat-card"><div class="stat-card__value">{_format_int(metrics["headline_confirmatory_cell_count"])}</div><div class="stat-card__label">Headline confirmatory cells</div></div>
         <div class="stat-card"><div class="stat-card__value">{_format_pct(metrics["headline_positive_share"])}</div><div class="stat-card__label">Male-greater within headline cells</div></div>
-        <div class="stat-card"><div class="stat-card__value">{_format_int(metrics["supporting_inferential_cell_count"])}</div><div class="stat-card__label">Supporting inferential cells</div></div>
+        <div class="stat-card"><div class="stat-card__value">{_format_int(metrics["supporting_inferential_cell_count"])}</div><div class="stat-card__label">Inferential cells in supporting datasets</div></div>
       </div>
       <p>
         The strongest male-greater confirmatory cell is <strong>{html.escape(str(strongest_positive["trait_label"]))}</strong> in <strong>{html.escape(str(strongest_positive["dataset_label"]))}</strong>,
@@ -881,6 +899,7 @@ def _home_page(bundle: dict[str, object]) -> str:
 def _results_page(bundle: dict[str, object]) -> str:
     metrics = bundle["page_metrics"]["results"]
     tables = bundle["tables"]
+    supporting_names, supporting_with_ci, supporting_eligible = _supporting_split(tables)
     body = f"""<header class="page-header">
   <div class="container">
     <h1>Results</h1>
@@ -894,7 +913,7 @@ def _results_page(bundle: dict[str, object]) -> str:
     <div class="container container--wide">
       <h2>Headline Confirmatory Evidence</h2>
       <p>
-        There are {_format_int(metrics["headline_confirmatory_cell_count"])} headline-eligible confirmatory cells and {_format_int(metrics["supporting_inferential_cell_count"])} supporting inferential cells. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
+        There are {_format_int(metrics["headline_confirmatory_cell_count"])} headline-eligible confirmatory cells. The supporting datasets ({supporting_names}) add {_format_int(metrics["supporting_inferential_cell_count"])} inferential cells, reported separately. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
       </p>
       {_claim_status_details_html()}
       <div id="chart-forest" style="overflow-x:auto"></div>
@@ -910,10 +929,10 @@ def _results_page(bundle: dict[str, object]) -> str:
   </section>
   <section class="section">
     <div class="container container--wide">
-      <h2>Supporting Evidence</h2>
-      <p>Supporting datasets stay separate from the headline claim. Their counts and tables are generated from the same normalized rows.</p>
+      <h2>Supporting Datasets</h2>
+      <p>{supporting_names} stay separate from the headline claim. They contribute {_format_int(supporting_with_ci)} rows with a confidence interval ({_format_int(supporting_eligible)} eligible; the rest method-limited or provisional), and each row keeps its own claim status. Their counts and tables are generated from the same normalized rows.</p>
       {_html_table(
-          ["Dataset", "Priority", "Rows", "With CI", "Headline", "Provisional", "Method-limited", "QA only", "Median VR", "% Male-greater"],
+          ["Dataset", "Priority", "Rows", "With CI", "Eligible rows", "Provisional", "Method-limited", "QA only", "Median VR", "% Male-greater"],
           [
               [
                   f"<td>{html.escape(str(row['dataset_label']))}</td>",
@@ -929,9 +948,9 @@ def _results_page(bundle: dict[str, object]) -> str:
               ]
               for row in tables["supporting_summary"]
           ],
-          caption="Supporting-evidence summary"
+          caption="Supporting-dataset summary"
       )}
-      {_cell_table(tables["supporting_top_cells"], caption="Largest supporting-evidence cells")}
+      {_cell_table(tables["supporting_top_cells"], caption="Largest cells in the supporting datasets")}
     </div>
   </section>
   <section class="section">
@@ -1199,6 +1218,7 @@ def render_readme(bundle: dict[str, object], output_path: Path) -> Path:
     tables = bundle["tables"]
     strongest_positive = bundle["key_cells"]["headline_positive"]
     strongest_negative = bundle["key_cells"]["headline_counterexample"]
+    supporting_names, _, supporting_eligible = _supporting_split(tables)
 
     headline_table = pd.DataFrame(
         [
@@ -1285,7 +1305,7 @@ def render_readme(bundle: dict[str, object], output_path: Path) -> Path:
         "",
         f"- Strongest positive: {strongest_positive['trait_label']} in {strongest_positive['dataset_label']}, age {strongest_positive['age_band']} (VR {_format_vr(strongest_positive['variance_ratio'])})",
         f"- Strongest counterexample: {strongest_negative['trait_label']} in {strongest_negative['dataset_label']}, age {strongest_negative['age_band']} (VR {_format_vr(strongest_negative['variance_ratio'])})",
-        f"- Supporting evidence: {_format_int(summary['supporting_inferential_cell_count'])} inferential rows from NHANES, HRS, and PSID are reported separately from the headline claim",
+        f"- Supporting datasets: {supporting_names} add {_format_int(summary['supporting_inferential_cell_count'])} inferential rows, reported separately from the headline claim ({_format_int(supporting_eligible)} eligible; the rest method-limited or provisional)",
         "",
         "## Selected headline cells",
         "",

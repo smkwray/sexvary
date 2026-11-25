@@ -34,7 +34,7 @@ The analysis is descriptive. Observed score variance on public-use instruments i
 
 - Strongest positive: Numeracy in PIAAC cycle 2, age 60-65 (VR 1.46x)
 - Strongest counterexample: Reading achievement in ECLS-K:2011, age K (VR 0.10x)
-- Supporting evidence: 263 inferential rows from NHANES, HRS, and PSID are reported separately from the headline claim
+- Supporting datasets: HRS, NHANES and PSID add 263 inferential rows, reported separately from the headline claim (132 eligible; the rest method-limited or provisional)
 
 ## Selected headline cells
 

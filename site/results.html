@@ -37,7 +37,7 @@
     <div class="container container--wide">
       <h2>Headline Confirmatory Evidence</h2>
       <p>
-        There are 67 headline-eligible confirmatory cells and 263 supporting inferential cells. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
+        There are 67 headline-eligible confirmatory cells. The supporting datasets (HRS, NHANES and PSID) add 263 inferential cells, reported separately. Confirmatory here means the core pre-designated rows used for the main claim. The forest plot now uses variance-ratio confidence intervals rather than point estimates alone.
       </p>
       <details class="callout">
   <summary class="callout__title" style="cursor:pointer">What these claim-status labels mean</summary>
@@ -149,12 +149,12 @@
   </section>
   <section class="section">
     <div class="container container--wide">
-      <h2>Supporting Evidence</h2>
-      <p>Supporting datasets stay separate from the headline claim. Their counts and tables are generated from the same normalized rows.</p>
+      <h2>Supporting Datasets</h2>
+      <p>HRS, NHANES and PSID stay separate from the headline claim. They contribute 263 rows with a confidence interval (132 eligible; the rest method-limited or provisional), and each row keeps its own claim status. Their counts and tables are generated from the same normalized rows.</p>
       <div class="table-wrap">
   <table class="data-table">
-    <caption>Supporting-evidence summary</caption>
-    <thead><tr><th>Dataset</th><th>Priority</th><th>Rows</th><th>With CI</th><th>Headline</th><th>Provisional</th><th>Method-limited</th><th>QA only</th><th>Median VR</th><th>% Male-greater</th></tr></thead>
+    <caption>Supporting-dataset summary</caption>
+    <thead><tr><th>Dataset</th><th>Priority</th><th>Rows</th><th>With CI</th><th>Eligible rows</th><th>Provisional</th><th>Method-limited</th><th>QA only</th><th>Median VR</th><th>% Male-greater</th></tr></thead>
     <tbody>
 <tr><td>HRS public</td><td>confirmatory</td><td class="num">26</td><td class="num">15</td><td class="num">0</td><td class="num">0</td><td class="num">15</td><td class="num">11</td><td class="num">0.97x</td><td class="num">47%</td></tr>
 <tr><td>HRS public</td><td>exploratory</td><td class="num">156</td><td class="num">76</td><td class="num">0</td><td class="num">21</td><td class="num">76</td><td class="num">80</td><td class="num">0.97x</td><td class="num">38%</td></tr>
@@ -168,7 +168,7 @@
 </div>
       <div class="table-wrap">
   <table class="data-table">
-    <caption>Largest supporting-evidence cells</caption>
+    <caption>Largest cells in the supporting datasets</caption>
     <thead><tr><th>Dataset</th><th>Cycle / wave</th><th>Age</th><th>Trait</th><th>VR</th><th>95% CI</th><th>Direction</th><th>Claim status</th></tr></thead>
     <tbody>
 <tr><td>HRS public</td><td>HRS 2020</td><td>52-55</td><td>Total cognition summary</td><td class="num">3.65x</td><td class="num">0.52x to 25.91x</td><td><span class="badge badge--headline">M &gt; F</span></td><td><span class="badge badge--provisional">Provisional</span></td></tr>
