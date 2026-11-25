@@ -4,9 +4,9 @@
 
 ---
 
-This project estimates where sex differences in score variability appear across **17 live datasets**. The public README is generated from the same normalized bundle as the site pages, so counts and tables stay aligned.
+Are test and measurement scores more spread out among males or among females, and does the answer change with the trait, the age group, and the dataset? This project estimates sex differences in score variability across 17 public-use datasets. The main measure is the variance ratio (VR), male variance divided by female variance: a VR above 1 means male scores vary more, and a VR below 1 means female scores vary more.
 
-The current public bundle includes NIH Collaborative Perinatal Project outputs for core cognition and growth trajectories. These CPP rows are visible in the dataset inventory and cell explorer, and currently remain method-limited rather than headline-eligible.
+The analysis is descriptive. Observed score variance on public-use instruments is not a measure of innate or biological variability.
 
 ## Claim-status glossary
 
@@ -32,9 +32,9 @@ The current public bundle includes NIH Collaborative Perinatal Project outputs f
 | Range | 0.10x to 1.46x |
 | Datasets contributing | 7 |
 
-- Strongest positive: **Numeracy** in **PIAAC cycle 2**, age **60-65** (VR 1.46x)
-- Strongest counterexample: **Reading achievement** in **ECLS-K:2011**, age **K** (VR 0.10x)
-- Supporting evidence: **263** inferential rows from NHANES, HRS, and PSID remain separate from the headline claim
+- Strongest positive: Numeracy in PIAAC cycle 2, age 60-65 (VR 1.46x)
+- Strongest counterexample: Reading achievement in ECLS-K:2011, age K (VR 0.10x)
+- Supporting evidence: 263 inferential rows from NHANES, HRS, and PSID are reported separately from the headline claim
 
 ## Selected headline cells
 
@@ -51,7 +51,7 @@ The current public bundle includes NIH Collaborative Perinatal Project outputs f
 
 ## Datasets
 
-| Dataset | Claim status | Cells | With CI | Headline rows | Median VR | % Male-greater |
+| Dataset | Claim status | Cells | With CI | Eligible rows | Median VR | % Male-greater |
 | --- | --- | --- | --- | --- | --- | --- |
 | CPP core cognition | Method-limited | 4 | 4 | 0 | 1.00x | 50% |
 | CPP growth trajectories | Method-limited | 15 | 15 | 0 | 1.01x | 53% |
@@ -71,18 +71,40 @@ The current public bundle includes NIH Collaborative Perinatal Project outputs f
 | TIMSS 2019 | Headline claim | 4 | 4 | 4 | 1.12x | 100% |
 | TIMSS 2023 | Headline claim | 4 | 4 | 4 | 1.13x | 100% |
 
+Eligible rows have a confidence interval and no provisional or method-limited flag. Only eligible rows on confirmatory traits count as headline cells (67 across 7 datasets), so eligible rows in supporting-evidence datasets stay outside the headline claim.
+
 ## Distribution views
 
-The generated bundle now exports strongest male-greater rows, strongest female-greater rows, closest-to-equal rows, largest-N rows, widest-CI rows, and per-dataset variance-ratio quantiles and histograms.
+The generated bundle also exports strongest male-greater rows, strongest female-greater rows, closest-to-equal rows, largest-N rows, widest-CI rows, and per-dataset variance-ratio quantiles and histograms.
 
 ## Methods
 
-The pipeline computes sex-specific weighted variances within dataset-defined cells. Public counts and display tables are generated from the normalized cross-dataset table rather than hand-maintained page content.
+The pipeline computes sex-specific weighted variances within dataset-defined cells (a trait at an age band and wave within one dataset) and reports their ratio, with a confidence interval where the data support one. The README and the site pages are generated from the same normalized cross-dataset table, so their counts and tables match. See [Methods](https://smkwray.github.io/sexvary/methods.html) for details.
 
 ## Reproducibility
 
-Run `python scripts/run_paper_bundle.py` after the backend comparison build to regenerate the site bundle, public pages, and README together.
+Requires Python 3.10+.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+python -m pytest
+
+python scripts/run_backend.py        # run every pipeline whose input data are present, then rebuild the comparison
+python scripts/run_paper_bundle.py   # regenerate the site bundle, site pages, and this README
+```
+
+Raw microdata are not included. `python scripts/acquire_public_data.py` creates a folder for each external dataset with a `SOURCE.md` note giving its official URL and access mode. Some datasets require registration, and their terms of use prohibit redistributing the raw files.
+
+## Limitations
+
+- Results describe observed scores on specific public-use instruments, ages, and cohorts; a result on one measure, population, or age does not establish the pattern for others.
+- Public-use files mask some survey design variables and may suppress small cells in the tails, which limits design-aware inference for variability.
+- Bounded scales distort variance. Kindergarten reading scores in ECLS-K:2011 show floor effects at school entry: the fall-kindergarten reading cell shows much greater female variability, while the same sample shows greater male variability in reading by later grades.
+
+See [Limits](https://smkwray.github.io/sexvary/limits.html) for the full list.
 
 ## License
 
-MIT
+[MIT](LICENSE)

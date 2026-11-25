@@ -80,3 +80,5 @@ $tmpdir/
 *.egg-info/
 dist/
 build/
+
+.private-denylist
