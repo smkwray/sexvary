@@ -6,8 +6,9 @@ Developer setup and pipeline reference for the sexvary analysis backend.
 
 ```bash
 # Create environment
-uv venv "$HOME/venvs/sexvary" --python 3.11
-uv pip install --python "$HOME/venvs/sexvary/bin/python" -e .[dev]
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 
 # Run tests
 make test
@@ -27,14 +28,14 @@ cp config/local_paths.example.yaml config/local_paths.yaml
 Then register each dataset:
 
 ```bash
-"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy79_main --path /path/to/nlsy79_cfa.csv
-"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy97_main --path /path/to/nlsy97_cfa.csv
-"$HOME/venvs/sexvary/bin/python" scripts/register_nlsy.py --dataset-id nlsy79_child_ya --path /path/to/cnlsy_cfa.csv
+python scripts/register_nlsy.py --dataset-id nlsy79_main --path /path/to/nlsy79_cfa.csv
+python scripts/register_nlsy.py --dataset-id nlsy97_main --path /path/to/nlsy97_cfa.csv
+python scripts/register_nlsy.py --dataset-id nlsy79_child_ya --path /path/to/cnlsy_cfa.csv
 ```
 
 Relative paths in `config/local_paths.yaml` are resolved from the project root.
 
-External public-use datasets resolve from the canonical shared data root first (`../data/sources/{provider}/{dataset}/{version}/...`), then fall back to legacy repo-local paths. Set `PROJ_SHARED_DATA_ROOT` to override.
+External public-use datasets are read from `<data root>/sources/{provider}/{dataset}/{version}/`, then from `data/raw/external/{dataset_id}/`. The data root is `PROJ_SHARED_DATA_ROOT` if set, otherwise `../data` if that folder exists, otherwise `data/`.
 
 ## Pipeline commands
 
@@ -56,7 +57,6 @@ External public-use datasets resolve from the canonical shared data root first (
 | `make compare-results` | Build cross-dataset comparison tables and figures |
 | `make paper-report` | Build paper-style report bundle |
 | `make backend` | Run all available pipelines end to end |
-| `make backend-health` | Build local-vs-remote health report |
 | `make update-site-assets` | Copy fresh figures to site directory |
 
 ## Full backend rebuild
@@ -65,7 +65,7 @@ External public-use datasets resolve from the canonical shared data root first (
 make backend
 ```
 
-This detects which pipelines are runnable from available data, runs them in sequence, and rebuilds the cross-dataset comparison layer. Use `--dry-run` to preview.
+This detects which pipelines are runnable from available data, runs them in sequence, and rebuilds the cross-dataset comparison layer. To preview without running, use `python scripts/run_backend.py --dry-run`.
 
 ## Repository layout
 
@@ -79,25 +79,6 @@ sexvary/
 ├── src/sexvary/     # Main Python package
 └── tests/           # Test suite
 ```
-
-## Evidence status system
-
-Every output cell carries a label:
-
-- **headline-eligible** — confirmatory trait, design-aware inference, no caveats
-- **supporting** — secondary/exploratory priority
-- **provisional** — relies on fallback weights
-- **method-limited** — simple-design SE only
-- **QA-only** — below thresholds or bounded-scale issues
-
-## Defensibility rules
-
-- Keep the project **descriptive**
-- Do not turn observed score variance into a claim about innate capacity
-- Report **male-greater, female-greater, and null** variance patterns
-- Separate **instrument / age / cohort / population** effects
-- Document exclusions, topcoding, bounded scales, and missing-data choices
-- Never bypass terms of use or public-data restrictions
 
 ## License
 
